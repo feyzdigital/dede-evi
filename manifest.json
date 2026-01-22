@@ -1,0 +1,26 @@
+{
+  "name": "Dede'nin Gizemli Evi",
+  "short_name": "Dede Evi",
+  "description": "Bulmaca ve Kaçış Macerası Oyunu - Dedenin evinden kaçmaya çalış!",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "categories": ["games", "entertainment"],
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
