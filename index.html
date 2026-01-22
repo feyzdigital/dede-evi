@@ -59,35 +59,43 @@
         .hud-stat{font-size:11px}
         .pause-btn{background:none;border:1px solid #3a3a5e;padding:3px 6px;color:var(--pale);font-size:12px;border-radius:3px}
         
-        #game-area{flex:1;position:relative;overflow:hidden;background:var(--bg-dark)}
-        #room-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
-        #room{position:relative;width:800px;height:500px;transform-origin:center center}
+        #game-area{flex:1;position:relative;overflow:hidden;background:#151520}
         
-        .room-salon{background:radial-gradient(ellipse at 20% 20%,rgba(107,91,149,0.1) 0%,transparent 50%),linear-gradient(180deg,#2d2d4a,#1a1a30)}
-        .room-mutfak{background:radial-gradient(ellipse at 80% 30%,rgba(69,183,170,0.08) 0%,transparent 50%),linear-gradient(180deg,#2a3d4a,#1a2530)}
-        .room-yatak{background:radial-gradient(ellipse at 50% 50%,rgba(149,91,107,0.1) 0%,transparent 50%),linear-gradient(180deg,#3d2d4a,#251a30)}
-        .room-bodrum{background:radial-gradient(ellipse at 30% 70%,rgba(80,80,100,0.1) 0%,transparent 50%),linear-gradient(180deg,#252535,#151520)}
-        .room-floor{position:absolute;bottom:0;left:0;right:0;height:100px;background:repeating-linear-gradient(90deg,#5a4a3a 0px,#5a4a3a 40px,#6a5a4a 40px,#6a5a4a 80px);border-top:3px solid #3a2a1a}
-        .furniture{position:absolute;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid;border-color:#7a6a5a #4a3a2a #4a3a2a #7a6a5a;box-shadow:inset -3px -3px 0 rgba(0,0,0,0.4),inset 3px 3px 0 rgba(255,255,255,0.15);border-radius:3px}
-        .door{position:absolute;background:linear-gradient(180deg,#7a6a5a,#5a4a3a);border:3px solid;border-color:#9a8a7a #4a3a2a #4a3a2a #9a8a7a;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;z-index:10;border-radius:3px}
-        .door::before{content:'';position:absolute;right:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;background:radial-gradient(circle,var(--gold),#aa8800);border-radius:50%}
-        .door-label{font-size:7px;color:rgba(255,255,255,0.7);margin-top:3px}
-        .door.exit{background:linear-gradient(180deg,#4a7a5a,#3a5a4a);border-color:#6a9a7a #2a4a3a #2a4a3a #6a9a7a}
-        .door.exit.locked{background:linear-gradient(180deg,#6a5050,#4a3535)}
-        .door.exit.locked::after{content:'🔒';position:absolute;font-size:12px;top:50%;left:50%;transform:translate(-50%,-50%)}
-        .puzzle-obj{position:absolute;font-size:24px;z-index:15;filter:drop-shadow(0 0 6px rgba(244,208,63,0.5));animation:float 3s ease-in-out infinite}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-        .clue-obj{position:absolute;font-size:20px;z-index:15;filter:drop-shadow(0 0 5px rgba(69,183,170,0.6));animation:float 2.5s ease-in-out infinite}
-        .player{position:absolute;width:28px;height:42px;z-index:40;display:flex;align-items:center;justify-content:center;font-size:22px;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
-        .player.hiding{opacity:0.3;transform:scale(0.9)}
+        #room{position:absolute;top:0;left:0;transform-origin:top left;background:#1a1a30}
+        
+        .room-salon{background:radial-gradient(ellipse at 20% 20%,rgba(107,91,149,0.15) 0%,transparent 50%),linear-gradient(180deg,#2d2d4a,#1a1a30)}
+        .room-mutfak{background:radial-gradient(ellipse at 80% 30%,rgba(69,183,170,0.1) 0%,transparent 50%),linear-gradient(180deg,#2a3d4a,#1a2530)}
+        .room-yatak{background:radial-gradient(ellipse at 50% 50%,rgba(149,91,107,0.12) 0%,transparent 50%),linear-gradient(180deg,#3d2d4a,#251a30)}
+        .room-bodrum{background:radial-gradient(ellipse at 30% 70%,rgba(80,80,100,0.12) 0%,transparent 50%),linear-gradient(180deg,#252535,#151520)}
+        
+        .room-floor{position:absolute;bottom:0;left:0;right:0;height:80px;background:repeating-linear-gradient(90deg,#5a4a3a 0px,#5a4a3a 30px,#6a5a4a 30px,#6a5a4a 60px);border-top:3px solid #3a2a1a}
+        
+        .furniture{position:absolute;display:flex;align-items:center;justify-content:center;border:2px solid;border-color:#7a6a5a #4a3a2a #4a3a2a #7a6a5a;box-shadow:inset -2px -2px 0 rgba(0,0,0,0.4),inset 2px 2px 0 rgba(255,255,255,0.15);border-radius:3px}
+        
+        .door{position:absolute;background:linear-gradient(180deg,#7a6a5a,#5a4a3a);border:3px solid;border-color:#9a8a7a #4a3a2a #4a3a2a #9a8a7a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;border-radius:3px}
+        .door::before{content:'';position:absolute;right:5px;top:50%;transform:translateY(-50%);width:5px;height:5px;background:var(--gold);border-radius:50%}
+        .door-label{font-size:8px;color:rgba(255,255,255,0.8);margin-top:2px}
+        .door.exit{background:linear-gradient(180deg,#4a7a5a,#3a5a4a);border-color:#6a9a7a #2a4a3a #2a4a3a #6a9a7a;box-shadow:0 0 10px rgba(69,183,170,0.4)}
+        .door.exit.locked{background:linear-gradient(180deg,#6a5050,#4a3535);box-shadow:none}
+        .door.exit.locked::after{content:'🔒';position:absolute;font-size:14px}
+        
+        .puzzle-obj{position:absolute;z-index:15;filter:drop-shadow(0 0 5px rgba(244,208,63,0.6));animation:float 3s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        .clue-obj{position:absolute;z-index:15;filter:drop-shadow(0 0 4px rgba(69,183,170,0.7));animation:float 2.5s ease-in-out infinite}
+        
+        .player{position:absolute;z-index:40;display:flex;align-items:center;justify-content:center;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
+        .player.hiding{opacity:0.3;transform:scale(0.85)}
         .player.hurt{animation:hurtBlink 0.12s linear 4}
         @keyframes hurtBlink{0%,100%{opacity:1}50%{opacity:0.3}}
-        .grandpa{position:absolute;width:36px;height:50px;display:none;align-items:center;justify-content:center;font-size:26px;z-index:35;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
+        
+        .grandpa{position:absolute;display:none;align-items:center;justify-content:center;z-index:35;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
         .grandpa.visible{display:flex}
-        .grandpa.chasing{animation:grandpaChase 0.2s infinite}
-        @keyframes grandpaChase{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+        .grandpa.chasing{animation:grandpaChase 0.2s infinite;filter:drop-shadow(0 0 8px rgba(200,100,100,0.6))}
+        @keyframes grandpaChase{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+        
         .msg{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(15,15,26,0.95);border:2px solid var(--purple);padding:6px 12px;font-size:11px;display:none;z-index:60;max-width:90%;text-align:center;border-radius:6px}
         .msg.show{display:block}
+        
         .minimap{position:absolute;bottom:8px;right:8px;width:60px;height:48px;background:rgba(15,15,26,0.9);border:2px solid #3a3a5e;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:2px;z-index:50;border-radius:3px}
         .map-room{background:#2a2a4e;display:flex;align-items:center;justify-content:center;font-size:5px;color:#666;border-radius:2px}
         .map-room.current{background:var(--purple-dark);color:white}
@@ -184,11 +192,9 @@
         </div>
         
         <div id="game-area">
-            <div id="room-wrapper">
-                <div id="room">
-                    <div class="player" id="player">🧑</div>
-                    <div class="grandpa" id="grandpa">👴</div>
-                </div>
+            <div id="room">
+                <div class="player" id="player">🧑</div>
+                <div class="grandpa" id="grandpa">👴</div>
             </div>
             <div class="msg" id="msg"></div>
             <div class="minimap" id="minimap"></div>
@@ -273,16 +279,52 @@
 </div>
 
 <script>
+// OYUN SABİTLERİ
+const GAME_W = 800, GAME_H = 500;
+let scale = 1;
+
 const CHARS={cocuk:{name:'ÇOCUK',emoji:'🧒',hp:100,spd:3.5},kiz:{name:'KIZ',emoji:'👧',hp:90,spd:4},oglan:{name:'OĞLAN',emoji:'👦',hp:110,spd:3.2},bebek:{name:'MİNİK',emoji:'👶',hp:80,spd:4.5},nine:{name:'NİNE',emoji:'👵',hp:120,spd:2.8},kedi:{name:'KEDİ',emoji:'🐱',hp:70,spd:5}};
 const CHAPTERS=[{id:1,name:'BÖLÜM 1',story:'Bulmacaları çöz!'},{id:2,name:'BÖLÜM 2',story:'Dede daha hızlı!'},{id:3,name:'BÖLÜM 3',story:'Son kaçış!'}];
 const PUZZLES_EASY=[{q:'2+2=?',a:'4',h:'Dört'},{q:'3+3=?',a:'6',h:'Altı'},{q:'5+3=?',a:'8',h:'Sekiz'},{q:'10-5=?',a:'5',h:'Beş'},{q:'Elde kaç parmak?',a:'5',h:'Say'},{q:'Gökyüzü rengi?',a:'mavi',h:'Yukarı bak'},{q:'Haftada kaç gün?',a:'7',h:'Pazartesi-Pazar'},{q:'Köpek sesi?',a:'hav',h:'Hav hav'},{q:'Kedi sesi?',a:'miyav',h:'Miyav'},{q:'İnek ne verir?',a:'sut',h:'Beyaz'}];
 const PUZZLES_MEDIUM=[{q:'5+7=?',a:'12',h:'12'},{q:'15-8=?',a:'7',h:'7'},{q:'4x3=?',a:'12',h:'12'},{q:'2,4,6,8,?',a:'10',h:'İkişer'},{q:'Yılda kaç ay?',a:'12',h:'12'},{q:'Üçgenin köşesi?',a:'3',h:'Üç'}];
 const PUZZLES_HARD=[{q:'18+15=?',a:'33',h:'33'},{q:'6x4=?',a:'24',h:'24'},{q:'100-45=?',a:'55',h:'55'},{q:'Başkent?',a:'ankara',h:'İstanbul değil'},{q:'Gökkuşağı renk?',a:'7',h:'Yedi'}];
 const PUZZLE_POOLS={1:PUZZLES_EASY,2:PUZZLES_MEDIUM,3:PUZZLES_HARD};
-const ROOMS={salon:{name:'SALON',bg:'room-salon',furniture:[{x:20,y:150,w:100,h:45,icon:'🛋️',c:'#6b5344'},{x:20,y:220,w:55,h:45,icon:'🪑',c:'#5a4535'},{x:140,y:100,w:70,h:45,icon:'📺',c:'#2a2a3a'},{x:680,y:150,w:65,h:90,icon:'🗄️',c:'#4a3a2a',hide:true}],puzzleSpots:[{x:350,y:100,icon:'🖼️'}],clueSpot:{x:580,y:390,icon:'📜'},doors:[{x:755,y:280,w:25,h:70,to:'mutfak',dir:'right'},{x:380,y:55,w:70,h:25,to:'yatak',dir:'top'}],patrol:[{x:200,y:330},{x:480,y:380},{x:620,y:330}]},mutfak:{name:'MUTFAK',bg:'room-mutfak',furniture:[{x:20,y:100,w:55,h:90,icon:'🧊',c:'#8a9a9a'},{x:20,y:210,w:90,h:40,icon:'🍳',c:'#7a6a5a'},{x:660,y:360,w:75,h:65,icon:'📦',c:'#5a4a3a',hide:true}],puzzleSpots:[{x:480,y:100,icon:'📖'}],clueSpot:{x:330,y:390,icon:'📜'},doors:[{x:0,y:280,w:25,h:70,to:'salon',dir:'left'},{x:380,y:55,w:70,h:25,to:'bodrum',dir:'top'}],patrol:[{x:280,y:330},{x:520,y:380},{x:380,y:330}]},yatak:{name:'YATAK',bg:'room-yatak',furniture:[{x:20,y:120,w:120,h:65,icon:'🛏️',c:'#5a4a4a',hide:true},{x:20,y:210,w:55,h:90,icon:'🚪',c:'#4a3a2a',hide:true},{x:660,y:190,w:75,h:45,icon:'💻',c:'#3a3a4a'}],puzzleSpots:[{x:380,y:100,icon:'🖼️'}],clueSpot:{x:530,y:390,icon:'📜'},safeSpot:{x:660,y:390},doors:[{x:380,y:450,w:70,h:25,to:'salon',dir:'bottom'},{x:755,y:280,w:25,h:70,to:'bodrum',dir:'right'}],patrol:[{x:240,y:330},{x:480,y:380},{x:380,y:360}]},bodrum:{name:'BODRUM',bg:'room-bodrum',furniture:[{x:20,y:120,w:45,h:45,icon:'📦',c:'#4a3a2a'},{x:630,y:330,w:85,h:75,icon:'📦',c:'#5a4a3a',hide:true}],puzzleSpots:[],clueSpot:null,doors:[{x:380,y:450,w:70,h:25,to:'mutfak',dir:'bottom'},{x:0,y:280,w:25,h:70,to:'yatak',dir:'left'},{x:700,y:85,w:55,h:45,to:'exit',dir:'right',isExit:true}],patrol:[{x:190,y:330},{x:430,y:380},{x:330,y:360}]}};
-const ENTRY={left:{x:90,y:320},right:{x:660,y:320},top:{x:380,y:190},bottom:{x:380,y:360}};
 
-let G={running:false,paused:false,chapter:1,room:'salon',char:null,hp:100,maxHp:100,energy:100,cluesFound:0,clueAnswers:[],hasKey:false,hiding:false,invincible:false,px:380,py:280,gx:100,gy:280,gRoom:'mutfak',gChasing:false,gPatrolIdx:0,gRoomDelay:200,startTime:0,currentPuzzle:null,roomPuzzles:{},roomClues:{},safeCode:'',completedChapters:[false,false,false],scale:1};
+// Odalar - orijinal 800x500 koordinatlarında
+const ROOMS={
+    salon:{name:'SALON',bg:'room-salon',
+        furniture:[{x:15,y:120,w:90,h:40,icon:'🛋️',c:'#6b5344'},{x:15,y:180,w:50,h:40,icon:'🪑',c:'#5a4535'},{x:120,y:80,w:60,h:40,icon:'📺',c:'#2a2a3a'},{x:680,y:120,w:60,h:80,icon:'🗄️',c:'#4a3a2a',hide:true}],
+        puzzleSpots:[{x:320,y:80,icon:'🖼️'}],
+        clueSpot:{x:550,y:380,icon:'📜'},
+        doors:[{x:760,y:220,w:30,h:70,to:'mutfak',dir:'right'},{x:360,y:10,w:70,h:30,to:'yatak',dir:'top'}],
+        patrol:[{x:180,y:300},{x:450,y:350},{x:600,y:300}]
+    },
+    mutfak:{name:'MUTFAK',bg:'room-mutfak',
+        furniture:[{x:15,y:80,w:50,h:80,icon:'🧊',c:'#8a9a9a'},{x:15,y:180,w:80,h:35,icon:'🍳',c:'#7a6a5a'},{x:650,y:320,w:70,h:60,icon:'📦',c:'#5a4a3a',hide:true}],
+        puzzleSpots:[{x:450,y:80,icon:'📖'}],
+        clueSpot:{x:300,y:380,icon:'📜'},
+        doors:[{x:0,y:220,w:30,h:70,to:'salon',dir:'left'},{x:360,y:10,w:70,h:30,to:'bodrum',dir:'top'}],
+        patrol:[{x:250,y:300},{x:500,y:350},{x:350,y:300}]
+    },
+    yatak:{name:'YATAK',bg:'room-yatak',
+        furniture:[{x:15,y:100,w:100,h:55,icon:'🛏️',c:'#5a4a4a',hide:true},{x:15,y:175,w:50,h:80,icon:'🚪',c:'#4a3a2a',hide:true},{x:650,y:160,w:70,h:40,icon:'💻',c:'#3a3a4a'}],
+        puzzleSpots:[{x:350,y:80,icon:'🖼️'}],
+        clueSpot:{x:500,y:380,icon:'📜'},
+        safeSpot:{x:650,y:380},
+        doors:[{x:360,y:460,w:70,h:30,to:'salon',dir:'bottom'},{x:760,y:220,w:30,h:70,to:'bodrum',dir:'right'}],
+        patrol:[{x:220,y:300},{x:450,y:350},{x:350,y:320}]
+    },
+    bodrum:{name:'BODRUM',bg:'room-bodrum',
+        furniture:[{x:15,y:100,w:40,h:40,icon:'📦',c:'#4a3a2a'},{x:620,y:300,w:80,h:70,icon:'📦',c:'#5a4a3a',hide:true}],
+        puzzleSpots:[],
+        clueSpot:null,
+        doors:[{x:360,y:460,w:70,h:30,to:'mutfak',dir:'bottom'},{x:0,y:220,w:30,h:70,to:'yatak',dir:'left'},{x:700,y:60,w:60,h:50,to:'exit',dir:'right',isExit:true}],
+        patrol:[{x:180,y:300},{x:400,y:350},{x:300,y:320}]
+    }
+};
+const ENTRY={left:{x:80,y:280},right:{x:700,y:280},top:{x:395,y:120},bottom:{x:395,y:380}};
+
+let G={running:false,paused:false,chapter:1,room:'salon',char:null,hp:100,maxHp:100,energy:100,cluesFound:0,clueAnswers:[],hasKey:false,hiding:false,invincible:false,px:395,py:280,gx:100,gy:280,gRoom:'mutfak',gChasing:false,gPatrolIdx:0,gRoomDelay:200,startTime:0,currentPuzzle:null,roomPuzzles:{},roomClues:{},safeCode:'',completedChapters:[false,false,false]};
 let keys={w:false,a:false,s:false,d:false,shift:false};
 let joystick={active:false,dx:0,dy:0};
 let mobileRun=false,msgTimeout=null,timerInterval=null;
@@ -296,13 +338,33 @@ function vibrate(p=50){if('vibrate'in navigator)navigator.vibrate(p)}
 function showMsg(t,d=2500){const e=$('msg');e.innerHTML=t;e.classList.add('show');clearTimeout(msgTimeout);msgTimeout=setTimeout(()=>e.classList.remove('show'),d)}
 function formatTime(s){return Math.floor(s/60).toString().padStart(2,'0')+':'+(s%60).toString().padStart(2,'0')}
 
+// EKRAN ÖLÇEKLENDİRME - ÇOK ÖNEMLİ
 function updateScale(){
-    const ga=$('game-area'),r=$('room');if(!ga||!r)return;
-    const aW=ga.clientWidth,aH=ga.clientHeight,rW=800,rH=500;
-    G.scale=Math.min(aW/rW,aH/rH,1.2);
-    r.style.transform=`scale(${G.scale})`;
+    const ga=$('game-area');
+    if(!ga)return;
+    const aW=ga.clientWidth;
+    const aH=ga.clientHeight;
+    
+    // Ekrana sığacak ölçek hesapla
+    const scaleX = aW / GAME_W;
+    const scaleY = aH / GAME_H;
+    scale = Math.min(scaleX, scaleY);
+    
+    const room=$('room');
+    if(room){
+        room.style.width = GAME_W + 'px';
+        room.style.height = GAME_H + 'px';
+        room.style.transform = `scale(${scale})`;
+        
+        // Ortalamak için
+        const scaledW = GAME_W * scale;
+        const scaledH = GAME_H * scale;
+        room.style.left = ((aW - scaledW) / 2) + 'px';
+        room.style.top = ((aH - scaledH) / 2) + 'px';
+    }
 }
 window.addEventListener('resize',updateScale);
+window.addEventListener('orientationchange',()=>setTimeout(updateScale,100));
 
 function generatePuzzles(){
     const pool=PUZZLE_POOLS[G.chapter]||PUZZLES_EASY;
@@ -334,14 +396,15 @@ function startGame(){
     if(!G.char)return;vibrate(50);
     const c=CHARS[G.char];
     G.maxHp=c.hp;G.hp=c.hp;G.energy=100;G.running=true;G.paused=false;
-    G.room='salon';G.px=380;G.py=280;G.gx=100;G.gy=280;G.gRoom='mutfak';
+    G.room='salon';G.px=395;G.py=280;G.gx=100;G.gy=280;G.gRoom='mutfak';
     G.gChasing=false;G.gPatrolIdx=0;G.gRoomDelay=200;
     G.cluesFound=0;G.clueAnswers=[];G.hasKey=false;G.hiding=false;G.invincible=false;
     G.startTime=Date.now();G.currentPuzzle=null;
     generatePuzzles();
     $('menu').classList.remove('active');$('game').classList.add('active');
     $('player').textContent=c.emoji;$('chapter-ind').textContent=`B${G.chapter}`;
-    setTimeout(updateScale,50);renderRoom();updateHUD();
+    setTimeout(updateScale,50);
+    renderRoom();updateHUD();
     showChapterTransition(CHAPTERS[G.chapter-1],()=>{timerInterval=setInterval(updateTimer,1000);requestAnimationFrame(gameLoop)});
 }
 function showChapterTransition(ch,cb){$('trans-title').textContent=ch.name;$('trans-subtitle').textContent=ch.story;$('chapter-transition').classList.add('active');setTimeout(()=>{$('chapter-transition').classList.remove('active');showMsg('🔍 Bulmacaları çöz!',2500);cb()},1800)}
@@ -349,14 +412,71 @@ function showChapterTransition(ch,cb){$('trans-title').textContent=ch.name;$('tr
 function renderRoom(){
     const room=ROOMS[G.room],el=$('room'),p=$('player'),g=$('grandpa');
     el.innerHTML='';el.appendChild(p);el.appendChild(g);el.className=room.bg;
+    
+    // Zemin
     const fl=document.createElement('div');fl.className='room-floor';el.appendChild(fl);
-    room.furniture.forEach(f=>{const d=document.createElement('div');d.className='furniture'+(f.hide?' hideable':'');d.style.cssText=`left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.c}`;d.innerHTML=f.icon;el.appendChild(d)});
-    if(G.roomPuzzles[G.room]){const spots=room.puzzleSpots;G.roomPuzzles[G.room].forEach((p,i)=>{if(p.solved)return;const sp=spots[i]||spots[0];if(!sp)return;const d=document.createElement('div');d.className='puzzle-obj';d.style.cssText=`left:${sp.x}px;top:${sp.y}px`;d.textContent=sp.icon;el.appendChild(d)})}
-    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){const d=document.createElement('div');d.className='clue-obj';d.style.cssText=`left:${room.clueSpot.x}px;top:${room.clueSpot.y}px`;d.textContent=room.clueSpot.icon;el.appendChild(d)}
-    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){const d=document.createElement('div');d.className='puzzle-obj';d.style.cssText=`left:${room.safeSpot.x}px;top:${room.safeSpot.y}px;font-size:28px`;d.textContent='🔐';el.appendChild(d)}
-    room.doors.forEach(dr=>{const d=document.createElement('div');let cls='door';if(dr.isExit)cls+=' exit'+(!G.hasKey?' locked':'');d.className=cls;d.style.cssText=`left:${dr.x}px;top:${dr.y}px;width:${dr.w}px;height:${dr.h}px`;const arr={left:'◀',right:'▶',top:'▲',bottom:'▼'};if(!dr.isExit)d.innerHTML=`<span style="font-size:13px">${arr[dr.dir]}</span><span class="door-label">${ROOMS[dr.to]?.name.substring(0,3)||''}</span>`;el.appendChild(d)});
-    $('room-name').textContent=room.name;updateMinimap();
+    
+    // Mobilyalar
+    room.furniture.forEach(f=>{
+        const d=document.createElement('div');
+        d.className='furniture'+(f.hide?' hideable':'');
+        d.style.cssText=`left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.c};font-size:${Math.min(f.w,f.h)*0.6}px`;
+        d.innerHTML=f.icon;
+        el.appendChild(d);
+    });
+    
+    // Bulmacalar
+    if(G.roomPuzzles[G.room]){
+        const spots=room.puzzleSpots;
+        G.roomPuzzles[G.room].forEach((pz,i)=>{
+            if(pz.solved)return;
+            const sp=spots[i]||spots[0];
+            if(!sp)return;
+            const d=document.createElement('div');
+            d.className='puzzle-obj';
+            d.style.cssText=`left:${sp.x}px;top:${sp.y}px;font-size:28px`;
+            d.textContent=sp.icon;
+            el.appendChild(d);
+        });
+    }
+    
+    // İpucu
+    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){
+        const d=document.createElement('div');
+        d.className='clue-obj';
+        d.style.cssText=`left:${room.clueSpot.x}px;top:${room.clueSpot.y}px;font-size:24px`;
+        d.textContent=room.clueSpot.icon;
+        el.appendChild(d);
+    }
+    
+    // Kasa
+    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){
+        const d=document.createElement('div');
+        d.className='puzzle-obj';
+        d.style.cssText=`left:${room.safeSpot.x}px;top:${room.safeSpot.y}px;font-size:32px`;
+        d.textContent='🔐';
+        el.appendChild(d);
+    }
+    
+    // Kapılar
+    room.doors.forEach(dr=>{
+        const d=document.createElement('div');
+        let cls='door';
+        if(dr.isExit)cls+=' exit'+(!G.hasKey?' locked':'');
+        d.className=cls;
+        d.style.cssText=`left:${dr.x}px;top:${dr.y}px;width:${dr.w}px;height:${dr.h}px;font-size:16px`;
+        const arr={left:'◀',right:'▶',top:'▲',bottom:'▼'};
+        if(!dr.isExit){
+            d.innerHTML=`<span>${arr[dr.dir]}</span><span class="door-label">${ROOMS[dr.to]?.name.substring(0,3)||''}</span>`;
+        }
+        el.appendChild(d);
+    });
+    
+    $('room-name').textContent=room.name;
+    updateMinimap();
+    updateScale();
 }
+
 function updateHUD(){$('health-bar').style.width=(G.hp/G.maxHp*100)+'%';$('energy-bar').style.width=G.energy+'%';$('clue-count').textContent=G.cluesFound;$('key-indicator').textContent=G.hasKey?'🔑✓':'🔑❌'}
 function updateTimer(){if(!G.running||G.paused)return;const s=Math.floor((Date.now()-G.startTime)/1000);$('timer').textContent=formatTime(s)}
 function updateMinimap(){const m=$('minimap');m.innerHTML='';[{id:'yatak',name:'YTK'},{id:'bodrum',name:'BOD'},{id:'salon',name:'SAL'},{id:'mutfak',name:'MUT'}].forEach(r=>{const d=document.createElement('div');d.className='map-room'+(r.id===G.room?' current':'')+(r.id===G.gRoom?' has-grandpa':'');d.textContent=r.name;m.appendChild(d)})}
@@ -366,40 +486,117 @@ function gameLoop(){
     const sa=$('safe-modal')?.classList.contains('active');
     if(!G.paused&&!G.hiding&&!G.currentPuzzle&&!sa){movePlayer();moveGrandpa();checkCollision()}
     if(G.hiding)updateHidingView();
-    $('player').style.left=G.px+'px';$('player').style.top=G.py+'px';
-    $('grandpa').style.left=G.gx+'px';$('grandpa').style.top=G.gy+'px';
-    $('grandpa').classList.toggle('visible',G.gRoom===G.room);$('grandpa').classList.toggle('chasing',G.gChasing);
-    $('grandpa').textContent=G.gChasing?'🧓':'👴';
+    
+    // Pozisyonları güncelle
+    const p=$('player'),g=$('grandpa');
+    p.style.left=G.px+'px';
+    p.style.top=G.py+'px';
+    p.style.fontSize='28px';
+    p.style.width='30px';
+    p.style.height='45px';
+    
+    g.style.left=G.gx+'px';
+    g.style.top=G.gy+'px';
+    g.style.fontSize='32px';
+    g.style.width='36px';
+    g.style.height='50px';
+    g.classList.toggle('visible',G.gRoom===G.room);
+    g.classList.toggle('chasing',G.gChasing);
+    g.textContent=G.gChasing?'🧓':'👴';
+    
     requestAnimationFrame(gameLoop);
 }
+
 function movePlayer(){
     const c=CHARS[G.char];if(!c)return;
-    const run=(keys.shift||mobileRun)&&G.energy>10;let spd=c.spd*(run?1.8:1);
+    const run=(keys.shift||mobileRun)&&G.energy>10;
+    let spd=c.spd*(run?1.8:1);
     let dx=0,dy=0;
-    if(joystick.active){dx=joystick.dx*spd;dy=joystick.dy*spd}else{if(keys.w)dy-=spd;if(keys.s)dy+=spd;if(keys.a)dx-=spd;if(keys.d)dx+=spd;if(dx&&dy){dx*=0.707;dy*=0.707}}
+    
+    if(joystick.active){dx=joystick.dx*spd;dy=joystick.dy*spd}
+    else{if(keys.w)dy-=spd;if(keys.s)dy+=spd;if(keys.a)dx-=spd;if(keys.d)dx+=spd;if(dx&&dy){dx*=0.707;dy*=0.707}}
+    
     if(dx===0&&dy===0){G.energy=Math.min(100,G.energy+0.2);updateHUD();return}
     if(run)G.energy=Math.max(0,G.energy-0.4);else G.energy=Math.min(100,G.energy+0.1);
-    const nX=G.px+dx,nY=G.py+dy,room=ROOMS[G.room];let cX=true,cY=true;
-    for(const f of room.furniture){if(collides({x:nX,y:G.py,w:24,h:36},{x:f.x,y:f.y,w:f.w,h:f.h}))cX=false;if(collides({x:G.px,y:nY,w:24,h:36},{x:f.x,y:f.y,w:f.w,h:f.h}))cY=false}
-    if(cX)G.px=clamp(nX,10,740);if(cY)G.py=clamp(nY,75,420);updateHUD();
+    
+    const nX=G.px+dx,nY=G.py+dy;
+    const room=ROOMS[G.room];
+    let cX=true,cY=true;
+    
+    for(const f of room.furniture){
+        if(collides({x:nX,y:G.py,w:26,h:40},{x:f.x,y:f.y,w:f.w,h:f.h}))cX=false;
+        if(collides({x:G.px,y:nY,w:26,h:40},{x:f.x,y:f.y,w:f.w,h:f.h}))cY=false;
+    }
+    
+    if(cX)G.px=clamp(nX,10,GAME_W-40);
+    if(cY)G.py=clamp(nY,50,GAME_H-60);
+    updateHUD();
 }
+
 function moveGrandpa(){
     const cs=1+(G.chapter-1)*0.3;
-    if(G.gRoom===G.room&&!G.hiding){const d=dist(G.gx,G.gy,G.px,G.py);if(d<180){G.gChasing=true;const sp=2.2*cs,a=Math.atan2(G.py-G.gy,G.px-G.gx);G.gx+=Math.cos(a)*sp;G.gy+=Math.sin(a)*sp}else{G.gChasing=false;patrol()}}else{G.gChasing=false;patrol();G.gRoomDelay--;if(G.gRoomDelay<=0){const rs=Object.keys(ROOMS);G.gRoom=rs[(rs.indexOf(G.gRoom)+1)%rs.length];G.gx=380;G.gy=280;G.gRoomDelay=280-(G.chapter*45);updateMinimap()}}
+    if(G.gRoom===G.room&&!G.hiding){
+        const d=dist(G.gx,G.gy,G.px,G.py);
+        if(d<180){
+            G.gChasing=true;
+            const sp=2.2*cs,a=Math.atan2(G.py-G.gy,G.px-G.gx);
+            G.gx+=Math.cos(a)*sp;G.gy+=Math.sin(a)*sp;
+        }else{G.gChasing=false;patrol()}
+    }else{
+        G.gChasing=false;patrol();
+        G.gRoomDelay--;
+        if(G.gRoomDelay<=0){
+            const rs=Object.keys(ROOMS);
+            G.gRoom=rs[(rs.indexOf(G.gRoom)+1)%rs.length];
+            G.gx=395;G.gy=280;G.gRoomDelay=280-(G.chapter*45);
+            updateMinimap();
+        }
+    }
 }
 function patrol(){const room=ROOMS[G.gRoom];if(!room?.patrol)return;const t=room.patrol[G.gPatrolIdx],d=dist(G.gx,G.gy,t.x,t.y);if(d<10)G.gPatrolIdx=(G.gPatrolIdx+1)%room.patrol.length;else{const a=Math.atan2(t.y-G.gy,t.x-G.gx);G.gx+=Math.cos(a)*1.1;G.gy+=Math.sin(a)*1.1}}
-function checkCollision(){if(G.invincible||G.hiding)return;if(G.gRoom===G.room&&dist(G.px,G.py,G.gx,G.gy)<35)takeDamage(25)}
+function checkCollision(){if(G.invincible||G.hiding)return;if(G.gRoom===G.room&&dist(G.px,G.py,G.gx,G.gy)<40)takeDamage(25)}
 function takeDamage(a){if(G.invincible)return;G.hp-=a;vibrate([100,50,100]);$('player').classList.add('hurt');setTimeout(()=>$('player').classList.remove('hurt'),500);G.invincible=true;setTimeout(()=>G.invincible=false,1500);updateHUD();if(G.hp<=0)gameOver()}
 
 function interact(){
     if(G.paused||!G.running)return;vibrate(30);if(G.hiding){exitHide();return}
     const room=ROOMS[G.room];
-    for(const d of room.doors){if(dist(G.px,G.py,d.x+d.w/2,d.y+d.h/2)<55){if(d.isExit){if(G.hasKey)winChapter();else{showMsg('🔒 Kilitli!',2000);vibrate([50,30,50])}}else changeRoom(d.to,d.dir);return}}
-    if(G.roomPuzzles[G.room]){const spots=room.puzzleSpots;for(let i=0;i<G.roomPuzzles[G.room].length;i++){const p=G.roomPuzzles[G.room][i];if(p.solved)continue;const sp=spots[i]||spots[0];if(sp&&dist(G.px,G.py,sp.x,sp.y)<65){openPuzzle(p);return}}}
-    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){if(dist(G.px,G.py,room.clueSpot.x,room.clueSpot.y)<65){collectClue();return}}
-    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){if(dist(G.px,G.py,room.safeSpot.x,room.safeSpot.y)<65){openSafe();return}}
-    for(const f of room.furniture){if(f.hide&&dist(G.px,G.py,f.x+f.w/2,f.y+f.h/2)<55){hideInFurniture(f);return}}
+    
+    // Kapılar
+    for(const d of room.doors){
+        if(dist(G.px,G.py,d.x+d.w/2,d.y+d.h/2)<60){
+            if(d.isExit){if(G.hasKey)winChapter();else{showMsg('🔒 Kilitli!',2000);vibrate([50,30,50])}}
+            else changeRoom(d.to,d.dir);
+            return;
+        }
+    }
+    
+    // Bulmacalar
+    if(G.roomPuzzles[G.room]){
+        const spots=room.puzzleSpots;
+        for(let i=0;i<G.roomPuzzles[G.room].length;i++){
+            const p=G.roomPuzzles[G.room][i];
+            if(p.solved)continue;
+            const sp=spots[i]||spots[0];
+            if(sp&&dist(G.px,G.py,sp.x,sp.y)<70){openPuzzle(p);return}
+        }
+    }
+    
+    // İpucu
+    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){
+        if(dist(G.px,G.py,room.clueSpot.x,room.clueSpot.y)<70){collectClue();return}
+    }
+    
+    // Kasa
+    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){
+        if(dist(G.px,G.py,room.safeSpot.x,room.safeSpot.y)<70){openSafe();return}
+    }
+    
+    // Saklanma
+    for(const f of room.furniture){
+        if(f.hide&&dist(G.px,G.py,f.x+f.w/2,f.y+f.h/2)<60){hideInFurniture(f);return}
+    }
 }
+
 function changeRoom(roomId,fromDir){vibrate(40);G.room=roomId;const op={left:'right',right:'left',top:'bottom',bottom:'top'},en=ENTRY[op[fromDir]]||ENTRY.left;G.px=en.x;G.py=en.y;renderRoom();showMsg(`📍 ${ROOMS[roomId].name}`,1500)}
 
 function openPuzzle(p){G.currentPuzzle=p;$('puz-text').textContent=p.q;$('puz-input').value='';$('puz-feedback').textContent='';$('puz-hint').textContent='';$('puzzle-modal').classList.add('active');setTimeout(()=>$('puz-input').focus(),100)}
@@ -425,13 +622,15 @@ function restart(){vibrate(50);document.querySelectorAll('.modal').forEach(m=>m.
 function toMenu(){vibrate(50);G.running=false;clearInterval(timerInterval);document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));$('game').classList.remove('active');$('menu').classList.add('active');initMenu()}
 function togglePause(){if(!G.running)return;vibrate(30);G.paused=!G.paused;if(G.paused){const s=Math.floor((Date.now()-G.startTime)/1000);$('pause-stats').innerHTML=`⏱️${formatTime(s)}<br>📜${G.cluesFound}/3 🔑${G.hasKey?'✓':'✗'}`;$('pause-modal').classList.add('active')}else $('pause-modal').classList.remove('active')}
 
+// KLAVYE
 document.addEventListener('keydown',e=>{if(document.activeElement?.tagName==='INPUT'){if(e.key==='Escape'){document.activeElement.blur();if(G.currentPuzzle)closePuzzle()}return}const k=e.key.toLowerCase();if(k==='w'||k==='arrowup'){keys.w=true;e.preventDefault()}if(k==='s'||k==='arrowdown'){keys.s=true;e.preventDefault()}if(k==='a'||k==='arrowleft'){keys.a=true;e.preventDefault()}if(k==='d'||k==='arrowright'){keys.d=true;e.preventDefault()}if(k==='shift')keys.shift=true;if(k==='e'||k===' '){e.preventDefault();interact()}if(k==='escape'){e.preventDefault();if(G.hiding)exitHide();else if(G.currentPuzzle)closePuzzle();else togglePause()}});
 document.addEventListener('keyup',e=>{if(document.activeElement?.tagName==='INPUT')return;const k=e.key.toLowerCase();if(k==='w'||k==='arrowup')keys.w=false;if(k==='s'||k==='arrowdown')keys.s=false;if(k==='a'||k==='arrowleft')keys.a=false;if(k==='d'||k==='arrowright')keys.d=false;if(k==='shift')keys.shift=false});
 
+// MOBİL KONTROLLER
 function initMobileControls(){
     const z=$('joystick-zone'),k=$('joystick-knob');if(!z||!k)return;let sX,sY;
     function hS(e){e.preventDefault();const t=e.touches?e.touches[0]:e,r=z.getBoundingClientRect();sX=r.left+r.width/2;sY=r.top+r.height/2;joystick.active=true}
-    function hM(e){if(!joystick.active)return;e.preventDefault();const t=e.touches?e.touches[0]:e;let dx=t.clientX-sX,dy=t.clientY-sY;const mD=32,d=Math.sqrt(dx*dx+dy*dy);if(d>mD){dx=(dx/d)*mD;dy=(dy/d)*mD}joystick.dx=dx/mD;joystick.dy=dy/mD;k.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`}
+    function hM(e){if(!joystick.active)return;e.preventDefault();const t=e.touches?e.touches[0]:e;let dx=t.clientX-sX,dy=t.clientY-sY;const mD=35,d=Math.sqrt(dx*dx+dy*dy);if(d>mD){dx=(dx/d)*mD;dy=(dy/d)*mD}joystick.dx=dx/mD;joystick.dy=dy/mD;k.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`}
     function hE(e){e.preventDefault();joystick.active=false;joystick.dx=0;joystick.dy=0;k.style.transform='translate(-50%,-50%)'}
     z.addEventListener('touchstart',hS,{passive:false});z.addEventListener('touchmove',hM,{passive:false});z.addEventListener('touchend',hE,{passive:false});z.addEventListener('touchcancel',hE,{passive:false});
     $('btn-action')?.addEventListener('touchstart',e=>{e.preventDefault();interact()},{passive:false});
@@ -439,6 +638,7 @@ function initMobileControls(){
     $('pause-btn')?.addEventListener('touchstart',e=>{e.preventDefault();togglePause()},{passive:false});
 }
 
+// INIT
 document.addEventListener('DOMContentLoaded',()=>{
     $('continue-intro').onclick=()=>{vibrate(50);$('intro-screen').classList.add('hidden');$('menu').classList.add('active');initMenu()};
     $('start-btn').onclick=startGame;
