@@ -4,2555 +4,455 @@
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Dede Evi">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1a1a2e">
-    <meta name="description" content="Dedenin Gizemli Evi - Bulmaca ve Kacis Macerasi">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dede'nin Gizemli Evi</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --pixel-size: 4px;
-            --bg-dark: #1a1a2e;
-            --bg-darker: #0f0f1a;
-            --purple: #6b5b95;
-            --purple-dark: #4a3f6b;
-            --gold: #f4d03f;
-            --gold-dark: #c9a227;
-            --teal: #45b7aa;
-            --pale: #e8e8e8;
-            --wood: #8b7355;
-            --wood-dark: #5c4d3a;
-        }
-        
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            touch-action: none;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
-        
-        body {
-            font-family: 'VT323', monospace;
-            background: var(--bg-darker);
-            color: var(--pale);
-            image-rendering: pixelated;
-        }
-        
-        #game-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            overflow: hidden;
-        }
-        
-        /* ===== INTRO ===== */
-        #intro-screen {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
-            text-align: center;
-        }
-        #intro-screen.hidden { display: none; }
-        
-        .story-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(16px, 5vw, 24px);
-            color: var(--gold);
-            text-shadow: 0 0 20px rgba(244,208,63,0.5), 2px 2px 0 #000;
-            margin-bottom: 25px;
-            animation: glow 2s ease-in-out infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(244,208,63,0.5), 2px 2px 0 #000; }
-            50% { text-shadow: 0 0 30px rgba(244,208,63,0.8), 2px 2px 0 #000; }
-        }
-        
-        .story-text {
-            max-width: 500px;
-            font-size: clamp(14px, 4vw, 18px);
-            line-height: 1.8;
-            color: var(--pale);
-            margin-bottom: 25px;
-        }
-        .story-text .highlight {
-            color: var(--gold);
-            font-weight: bold;
-        }
-        
-        .continue-btn {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(10px, 3vw, 12px);
-            padding: 15px 30px;
-            background: linear-gradient(180deg, var(--purple), var(--purple-dark));
-            border: 3px solid var(--gold);
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .continue-btn:hover, .continue-btn:active {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(244,208,63,0.5);
-        }
-        
-        /* ===== MENU ===== */
-        #menu {
-            position: absolute;
-            inset: 0;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-            z-index: 100;
-            overflow-y: auto;
-        }
-        #menu.active { display: flex; }
-        
-        .game-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(12px, 4vw, 18px);
-            color: var(--gold);
-            text-shadow: 0 0 20px rgba(244,208,63,0.5), 2px 2px 0 #000;
-            margin-bottom: 5px;
-            text-align: center;
-        }
-        
-        .game-subtitle {
-            font-size: clamp(12px, 3vw, 16px);
-            color: var(--teal);
-            margin-bottom: 20px;
-        }
-        
-        .menu-section {
-            margin-bottom: 15px;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .section-title {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .char-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            justify-content: center;
-            max-width: 400px;
-        }
-        
-        @media (max-width: 400px) {
-            .char-grid { 
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-        }
-        
-        .char-card {
-            background: linear-gradient(180deg, #2a2a4e, #1a1a2e);
-            border: 3px solid #3a3a5e;
-            padding: 12px 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .char-card:hover, .char-card:active {
-            border-color: var(--teal);
-            transform: translateY(-2px);
-        }
-        .char-card.selected {
-            border-color: var(--gold);
-            background: linear-gradient(180deg, #3a3a5e, #2a2a4e);
-            box-shadow: 0 0 15px rgba(244,208,63,0.3);
-        }
-        
-        .char-sprite {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-        .char-name {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            color: var(--gold);
-            margin-bottom: 4px;
-        }
-        .char-stats {
-            font-size: 11px;
-            color: #aaa;
-        }
-        
-        .chapter-select {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .chapter-btn {
-            padding: 10px 16px;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
-            background: #2a2a4e;
-            border: 2px solid #3a3a5e;
-            color: var(--pale);
-            cursor: pointer;
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .chapter-btn:hover { border-color: var(--teal); }
-        .chapter-btn.selected {
-            border-color: var(--gold);
-            background: #3a3a5e;
-            color: var(--gold);
-        }
-        .chapter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        
-        .start-btn {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(10px, 3vw, 14px);
-            padding: 15px 35px;
-            background: linear-gradient(180deg, var(--teal), #2a8a7f);
-            border: 3px solid var(--gold);
-            color: white;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .start-btn:hover:not(:disabled), .start-btn:active:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(69,183,170,0.5);
-        }
-        .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        #highscore {
-            margin-top: 15px;
-            color: var(--gold);
-            font-size: 14px;
-        }
-        
-        /* ===== GAME ===== */
-        #game {
-            position: absolute;
-            inset: 0;
-            display: none;
-        }
-        #game.active { display: block; }
-        
-        .hud {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 50px;
-            background: linear-gradient(180deg, #1a1a2e, #0f0f1a);
-            border-bottom: 3px solid #3a3a5e;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            z-index: 50;
-            flex-wrap: wrap;
-        }
-        
-        .hud-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .hud-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-        }
-        
-        .pixel-bar {
-            width: 60px;
-            height: 10px;
-            background: #1a1a1a;
-            border: 2px solid #3a3a3a;
-            overflow: hidden;
-        }
-        .pixel-bar-fill {
-            height: 100%;
-            transition: width 0.3s;
-        }
-        .health-fill { background: linear-gradient(90deg, #e74c3c, #c0392b); }
-        .energy-fill { background: linear-gradient(90deg, var(--teal), #2a8a7f); }
-        
-        .chapter-indicator {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            color: var(--purple);
-        }
-        
-        .room-name {
-            font-size: 16px;
-            color: var(--gold);
-            display: none;
-        }
-        @media (min-width: 500px) {
-            .room-name { display: block; }
-        }
-        
-        .timer {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-            color: var(--pale);
-        }
-        
-        .hud-stat { font-size: 14px; }
-        
-        .pause-btn {
-            background: none;
-            border: 2px solid #3a3a5e;
-            padding: 5px 10px;
-            color: var(--pale);
-            cursor: pointer;
-            font-size: 16px;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* ===== GAME AREA ===== */
-        #game-area {
-            position: absolute;
-            top: 50px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-        }
-        
-        @media (max-width: 768px), (pointer: coarse) {
-            #game-area { bottom: 130px; }
-        }
-        
-        @media (max-width: 480px) {
-            #game-area { bottom: 120px; }
-        }
-        
-        #room {
-            position: absolute;
-            inset: 0;
-            image-rendering: pixelated;
-        }
-        
-        /* Room backgrounds - cozy mysterious style */
-        .room-salon { 
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(107,91,149,0.1) 0%, transparent 50%),
-                linear-gradient(180deg, #2d2d4a 0%, #1a1a30 100%); 
-        }
-        .room-mutfak { 
-            background: 
-                radial-gradient(ellipse at 80% 30%, rgba(69,183,170,0.08) 0%, transparent 50%),
-                linear-gradient(180deg, #2a3d4a 0%, #1a2530 100%); 
-        }
-        .room-yatak { 
-            background: 
-                radial-gradient(ellipse at 50% 50%, rgba(149,91,107,0.1) 0%, transparent 50%),
-                linear-gradient(180deg, #3d2d4a 0%, #251a30 100%); 
-        }
-        .room-bodrum { 
-            background: 
-                radial-gradient(ellipse at 30% 70%, rgba(80,80,100,0.1) 0%, transparent 50%),
-                linear-gradient(180deg, #252535 0%, #151520 100%); 
-        }
-        
-        .room-floor {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 120px;
-            background: 
-                repeating-linear-gradient(90deg, 
-                    #5a4a3a 0px, #5a4a3a 40px,
-                    #6a5a4a 40px, #6a5a4a 80px
-                );
-            border-top: 4px solid #3a2a1a;
-            image-rendering: pixelated;
-        }
-        
-        .room-floor::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                repeating-linear-gradient(90deg,
-                    transparent 0px,
-                    transparent 39px,
-                    rgba(0,0,0,0.2) 39px,
-                    rgba(0,0,0,0.2) 41px,
-                    transparent 41px,
-                    transparent 80px
-                );
-        }
-        
-        /* Duvar süsleri */
-        .room-wall-decor {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 40px;
-            opacity: 0.15;
-            filter: blur(1px);
-        }
-        
-        .furniture {
-            position: absolute;
-            image-rendering: pixelated;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            border: 3px solid;
-            border-color: #7a6a5a #4a3a2a #4a3a2a #7a6a5a;
-            box-shadow: 
-                inset -4px -4px 0 rgba(0,0,0,0.4),
-                inset 4px 4px 0 rgba(255,255,255,0.15),
-                2px 4px 8px rgba(0,0,0,0.3);
-            transition: box-shadow 0.3s;
-        }
-        
-        .furniture::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 50%;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
-        }
-        
-        .furniture.hideable {
-            cursor: pointer;
-        }
-        
-        .furniture.hideable:hover {
-            box-shadow: 
-                inset -4px -4px 0 rgba(0,0,0,0.4),
-                inset 4px 4px 0 rgba(255,255,255,0.15),
-                0 0 20px rgba(69,183,170,0.5),
-                2px 4px 8px rgba(0,0,0,0.3);
-        }
-        
-        .door {
-            position: absolute;
-            background: linear-gradient(180deg, #7a6a5a, #5a4a3a);
-            border: 4px solid;
-            border-color: #9a8a7a #4a3a2a #4a3a2a #9a8a7a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            z-index: 10;
-            box-shadow: 
-                inset -4px -4px 0 rgba(0,0,0,0.3),
-                inset 4px 4px 0 rgba(255,255,255,0.1),
-                4px 4px 10px rgba(0,0,0,0.4);
-        }
-        .door::before {
-            content: '';
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background: radial-gradient(circle, var(--gold), #aa8800);
-            border-radius: 50%;
-            box-shadow: 0 0 6px var(--gold);
-        }
-        .door::after {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 15%;
-            right: 15%;
-            bottom: 55%;
-            background: rgba(0,0,0,0.2);
-            border: 2px solid rgba(0,0,0,0.3);
-        }
-        .door-label {
-            font-size: 8px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 4px;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-        }
-        
-        .door.exit {
-            background: linear-gradient(180deg, #4a7a5a, #3a5a4a);
-            border-color: #6a9a7a #2a4a3a #2a4a3a #6a9a7a;
-            box-shadow: 
-                inset -4px -4px 0 rgba(0,0,0,0.3),
-                inset 4px 4px 0 rgba(255,255,255,0.1),
-                0 0 15px rgba(69,183,170,0.3),
-                4px 4px 10px rgba(0,0,0,0.4);
-        }
-        .door.exit.locked {
-            background: linear-gradient(180deg, #6a5050, #4a3535);
-            border-color: #8a7070 #3a2525 #3a2525 #8a7070;
-            box-shadow: 
-                inset -4px -4px 0 rgba(0,0,0,0.3),
-                inset 4px 4px 0 rgba(255,255,255,0.1),
-                4px 4px 10px rgba(0,0,0,0.4);
-        }
-        .door.exit.locked::after {
-            content: '🔒';
-            position: absolute;
-            font-size: 14px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: none;
-            border: none;
-        }
-        
-        .puzzle-obj {
-            position: absolute;
-            font-size: 28px;
-            z-index: 15;
-            filter: drop-shadow(0 0 8px rgba(244,208,63,0.5));
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-        
-        .clue-obj {
-            position: absolute;
-            font-size: 24px;
-            z-index: 15;
-            filter: drop-shadow(0 0 6px rgba(69,183,170,0.6));
-            animation: float 2.5s ease-in-out infinite;
-        }
-        
-        .player {
-            position: absolute;
-            width: 32px;
-            height: 48px;
-            z-index: 40;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.5));
-            transition: opacity 0.2s, transform 0.1s;
-        }
-        .player.hiding { 
-            opacity: 0.3; 
-            transform: scale(0.9);
-        }
-        .player.hurt { 
-            animation: hurtBlink 0.12s linear 4; 
-        }
-        
-        @keyframes hurtBlink {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.1); filter: brightness(1.8) drop-shadow(0 0 10px #ff6666); }
-        }
-        
-        .grandpa {
-            position: absolute;
-            width: 40px;
-            height: 56px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            z-index: 35;
-            filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.5));
-            transition: filter 0.3s;
-        }
-        .grandpa.visible { display: flex; }
-        .grandpa.chasing {
-            animation: grandpaChase 0.2s infinite;
-            filter: 
-                drop-shadow(2px 3px 2px rgba(0,0,0,0.5))
-                drop-shadow(0 0 12px rgba(107,91,149,0.7));
-        }
-        
-        @keyframes grandpaChase {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-4px) rotate(2deg); }
-        }
-        
-        .msg {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15,15,26,0.95);
-            border: 2px solid var(--purple);
-            padding: 10px 20px;
-            font-size: 14px;
-            display: none;
-            z-index: 60;
-            max-width: 90%;
-            text-align: center;
-        }
-        .msg.show { display: block; animation: msgPop 0.3s; }
-        
-        @keyframes msgPop {
-            from { opacity: 0; transform: translateX(-50%) scale(0.9); }
-            to { opacity: 1; transform: translateX(-50%) scale(1); }
-        }
-        
-        .minimap {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 80px;
-            height: 65px;
-            background: rgba(15,15,26,0.9);
-            border: 2px solid #3a3a5e;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 2px;
-            padding: 3px;
-            z-index: 50;
-        }
-        
-        @media (max-width: 400px) {
-            .minimap { display: none; }
-        }
-        
-        .map-room {
-            background: #2a2a4e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7px;
-            color: #666;
-        }
-        .map-room.current {
-            background: var(--purple-dark);
-            color: white;
-        }
-        .map-room.has-grandpa::after {
-            content: '👀';
-            font-size: 8px;
-        }
-        
-        .controls-hint {
-            position: absolute;
-            bottom: 8px;
-            left: 10px;
-            font-size: 10px;
-            color: #444;
-        }
-        
-        @media (max-width: 600px) {
-            .controls-hint { display: none; }
-        }
-        
-        #fog {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 45;
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(15,15,26,0.3) 100%);
-        }
-        
-        /* ===== MOBILE CONTROLS ===== */
-        #mobile-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 130px;
-            background: linear-gradient(180deg, rgba(26,26,46,0.95), rgba(15,15,26,0.98));
-            border-top: 3px solid #3a3a5e;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
-            z-index: 80;
-        }
-        
-        @media (max-width: 768px), (pointer: coarse) {
-            #mobile-controls { display: flex; }
-            #game-area { bottom: 130px; }
-            .controls-hint { display: none; }
-            .minimap { 
-                width: 70px; 
-                height: 55px; 
-                bottom: 5px;
-                right: 5px;
-            }
-            .map-room { font-size: 6px; }
-        }
-        
-        @media (max-width: 480px) {
-            #mobile-controls { 
-                height: 120px;
-                padding: 8px 15px;
-            }
-            #game-area { bottom: 120px; }
-            .hud { 
-                height: 45px; 
-                padding: 0 8px;
-            }
-            .hud-item { gap: 3px; }
-            .pixel-bar { width: 50px; height: 8px; }
-            .timer { font-size: 9px; }
-            .chapter-indicator { font-size: 7px; }
-        }
-        
-        #joystick-zone {
-            width: 110px;
-            height: 110px;
-            background: rgba(58,58,94,0.6);
-            border: 3px solid #5a5a7e;
-            border-radius: 50%;
-            position: relative;
-            touch-action: none;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            flex-shrink: 0;
-        }
-        
-        #joystick-knob {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(145deg, var(--teal), #2a8a7f);
-            border: 3px solid var(--gold);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        
-        .mobile-btns {
-            display: flex;
-            gap: 15px;
-            flex-shrink: 0;
-        }
-        
-        .mobile-btn {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 3px solid;
-            font-size: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            transition: transform 0.1s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        
-        .mobile-btn:active {
-            transform: scale(0.9);
-        }
-        
-        #btn-action {
-            background: linear-gradient(145deg, var(--purple), var(--purple-dark));
-            border-color: var(--gold);
-        }
-        
-        #btn-run {
-            background: linear-gradient(145deg, var(--teal), #2a8a7f);
-            border-color: var(--gold);
-        }
-        
-        @media (max-width: 480px) {
-            #joystick-zone {
-                width: 95px;
-                height: 95px;
-            }
-            #joystick-knob {
-                width: 42px;
-                height: 42px;
-            }
-            .mobile-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
-            }
-            .mobile-btns { gap: 10px; }
-        }
-        
-        /* ===== MODALS ===== */
-        .modal {
-            position: absolute;
-            inset: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.9);
-            z-index: 500;
-            padding: 15px;
-        }
-        .modal.active { display: flex; }
-        
-        .modal-box {
-            background: linear-gradient(180deg, #2a2a4e, #1a1a2e);
-            border: 3px solid var(--purple);
-            padding: 25px;
-            text-align: center;
-            max-width: 95%;
-            max-height: 90%;
-            overflow-y: auto;
-        }
-        
-        .modal-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(10px, 3vw, 14px);
-            color: var(--gold);
-            margin-bottom: 15px;
-        }
-        
-        .modal-text {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: var(--pale);
-        }
-        
-        .modal-input {
-            width: 100%;
-            max-width: 200px;
-            padding: 14px;
-            font-family: 'VT323', monospace;
-            font-size: 24px;
-            text-align: center;
-            background: #0f0f1a;
-            border: 2px solid #3a3a5e;
-            color: var(--gold);
-            margin-bottom: 12px;
-            border-radius: 4px;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--teal);
-            box-shadow: 0 0 10px rgba(69,183,170,0.3);
-        }
-        
-        /* Mobil için input ayarları */
-        @media (max-width: 480px) {
-            .modal-input {
-                font-size: 20px;
-                padding: 12px;
-                max-width: 180px;
-            }
-            .modal-box {
-                padding: 20px 15px;
-                max-width: 92%;
-            }
-            .modal-title {
-                font-size: 11px;
-            }
-            .modal-text {
-                font-size: 15px;
-            }
-            .btn {
-                font-size: 15px;
-                padding: 10px 16px;
-            }
-            .modal-btns {
-                gap: 8px;
-            }
-        }
-        
-        .modal-btns {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            font-family: 'VT323', monospace;
-            font-size: 16px;
-            padding: 10px 20px;
-            border: 2px solid;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .btn-teal {
-            background: linear-gradient(180deg, var(--teal), #2a8a7f);
-            border-color: var(--gold);
-            color: white;
-        }
-        .btn-purple {
-            background: linear-gradient(180deg, var(--purple), var(--purple-dark));
-            border-color: var(--gold);
-            color: white;
-        }
-        .btn-gray {
-            background: linear-gradient(180deg, #444, #2a2a2a);
-            border-color: #666;
-            color: #aaa;
-        }
-        
-        .feedback {
-            font-size: 16px;
-            margin: 8px 0;
-            min-height: 20px;
-        }
-        .feedback.correct { color: var(--teal); }
-        .feedback.wrong { color: #e74c3c; }
-        
-        .hint {
-            font-size: 14px;
-            color: var(--gold);
-            margin: 8px 0;
-        }
-        
-        .hiding-modal .modal-box { border-color: var(--teal); }
-        .hiding-text {
-            font-size: 22px;
-            color: var(--teal);
-            margin-bottom: 15px;
-        }
-        .peephole {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px;
-            background: radial-gradient(circle, #1a1a2e 0%, #000 70%);
-            border: 3px solid #3a3a5e;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-        }
-        .hide-warning {
-            color: #e74c3c;
-            font-size: 16px;
-            margin-top: 10px;
-            display: none;
-        }
-        .hide-warning.show { display: block; animation: pulse 0.5s infinite; }
-        
-        @keyframes pulse {
-            50% { opacity: 0.5; }
-        }
-        
-        #chapter-transition {
-            position: absolute;
-            inset: 0;
-            background: #000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 600;
-            padding: 20px;
-            text-align: center;
-        }
-        #chapter-transition.active { display: flex; }
-        
-        .chapter-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(12px, 4vw, 18px);
-            color: var(--gold);
-            margin-bottom: 15px;
-        }
-        .chapter-subtitle {
-            font-size: 18px;
-            color: var(--pale);
-        }
-        
-        .win-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(14px, 4vw, 20px);
-            color: var(--teal);
-            margin-bottom: 15px;
-        }
-        .lose-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(14px, 4vw, 20px);
-            color: #e74c3c;
-            margin-bottom: 15px;
-        }
-        .score {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(12px, 3vw, 16px);
-            color: var(--gold);
-            margin: 15px 0;
-        }
-        
-        .safe-display {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(18px, 5vw, 24px);
-            color: var(--teal);
-            background: #0f0f1a;
-            padding: 12px 25px;
-            margin-bottom: 15px;
-            border: 3px solid #3a3a5e;
-            letter-spacing: 8px;
-        }
-        
-        .clue-list {
-            text-align: left;
-            margin: 12px 0;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #3a3a5e;
-        }
-        .clue-item {
-            margin: 6px 0;
-            font-size: 14px;
-        }
-        .clue-item.found { color: var(--gold); }
-        .clue-item.missing { color: #666; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg-dark:#1a1a2e;--bg-darker:#0f0f1a;--purple:#6b5b95;--purple-dark:#4a3f6b;--gold:#f4d03f;--teal:#45b7aa;--pale:#e8e8e8}
+        html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;position:fixed}
+        body{font-family:'VT323',monospace;background:var(--bg-darker);color:var(--pale)}
+        #game-container{position:fixed;inset:0;background:var(--bg-dark);overflow:hidden}
+        
+        #intro-screen{position:absolute;inset:0;background:linear-gradient(180deg,#1a1a2e,#0f0f1a);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:20px;text-align:center;padding-top:env(safe-area-inset-top)}
+        #intro-screen.hidden{display:none}
+        .story-title{font-family:'Press Start 2P',monospace;font-size:clamp(12px,5vw,20px);color:var(--gold);text-shadow:0 0 20px rgba(244,208,63,0.5);margin-bottom:20px}
+        .story-text{max-width:400px;font-size:clamp(13px,4vw,16px);line-height:1.7;margin-bottom:20px}
+        .story-text .highlight{color:var(--gold)}
+        .continue-btn{font-family:'Press Start 2P',monospace;font-size:clamp(9px,3vw,11px);padding:12px 25px;background:linear-gradient(180deg,var(--purple),var(--purple-dark));border:3px solid var(--gold);color:white;cursor:pointer;border-radius:4px}
+        
+        #menu{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:15px;background:linear-gradient(180deg,#1a1a2e,#0f0f1a);z-index:100;overflow-y:auto;padding-top:env(safe-area-inset-top)}
+        #menu.active{display:flex}
+        .game-title{font-family:'Press Start 2P',monospace;font-size:clamp(10px,4vw,16px);color:var(--gold);margin-bottom:5px;text-align:center}
+        .game-subtitle{font-size:clamp(11px,3vw,14px);color:var(--teal);margin-bottom:15px}
+        .menu-section{margin-bottom:12px;text-align:center;width:100%;max-width:350px}
+        .section-title{font-size:11px;color:#888;margin-bottom:8px;text-transform:uppercase}
+        .char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:280px;margin:0 auto}
+        .char-card{background:linear-gradient(180deg,#2a2a4e,#1a1a2e);border:2px solid #3a3a5e;padding:8px 4px;text-align:center;border-radius:6px}
+        .char-card.selected{border-color:var(--gold);box-shadow:0 0 10px rgba(244,208,63,0.3)}
+        .char-sprite{font-size:24px;margin-bottom:4px}
+        .char-name{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--gold);margin-bottom:2px}
+        .char-stats{font-size:9px;color:#aaa}
+        .chapter-select{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+        .chapter-btn{padding:8px 12px;font-family:'VT323',monospace;font-size:13px;background:#2a2a4e;border:2px solid #3a3a5e;color:var(--pale);border-radius:4px}
+        .chapter-btn.selected{border-color:var(--gold);color:var(--gold)}
+        .chapter-btn:disabled{opacity:0.4}
+        .start-btn{font-family:'Press Start 2P',monospace;font-size:clamp(9px,3vw,12px);padding:12px 25px;background:linear-gradient(180deg,var(--teal),#2a8a7f);border:3px solid var(--gold);color:white;margin-top:12px;border-radius:4px}
+        .start-btn:disabled{opacity:0.5}
+        #highscore{margin-top:10px;color:var(--gold);font-size:12px}
+        
+        #game{position:absolute;inset:0;display:none;flex-direction:column}
+        #game.active{display:flex}
+        .hud{height:40px;min-height:40px;background:linear-gradient(180deg,#1a1a2e,#0f0f1a);border-bottom:2px solid #3a3a5e;display:flex;align-items:center;justify-content:space-between;padding:0 8px;padding-top:env(safe-area-inset-top);z-index:50}
+        .hud-group{display:flex;align-items:center;gap:5px}
+        .hud-item{display:flex;align-items:center;gap:2px;font-size:11px}
+        .pixel-bar{width:35px;height:6px;background:#1a1a1a;border:1px solid #3a3a3a;overflow:hidden;border-radius:2px}
+        .pixel-bar-fill{height:100%;transition:width 0.3s}
+        .health-fill{background:linear-gradient(90deg,#e74c3c,#c0392b)}
+        .energy-fill{background:linear-gradient(90deg,var(--teal),#2a8a7f)}
+        .chapter-indicator{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--purple)}
+        .room-name{font-size:11px;color:var(--gold)}
+        .timer{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--pale)}
+        .hud-stat{font-size:11px}
+        .pause-btn{background:none;border:1px solid #3a3a5e;padding:3px 6px;color:var(--pale);font-size:12px;border-radius:3px}
+        
+        #game-area{flex:1;position:relative;overflow:hidden;background:var(--bg-dark)}
+        #room-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        #room{position:relative;width:800px;height:500px;transform-origin:center center}
+        
+        .room-salon{background:radial-gradient(ellipse at 20% 20%,rgba(107,91,149,0.1) 0%,transparent 50%),linear-gradient(180deg,#2d2d4a,#1a1a30)}
+        .room-mutfak{background:radial-gradient(ellipse at 80% 30%,rgba(69,183,170,0.08) 0%,transparent 50%),linear-gradient(180deg,#2a3d4a,#1a2530)}
+        .room-yatak{background:radial-gradient(ellipse at 50% 50%,rgba(149,91,107,0.1) 0%,transparent 50%),linear-gradient(180deg,#3d2d4a,#251a30)}
+        .room-bodrum{background:radial-gradient(ellipse at 30% 70%,rgba(80,80,100,0.1) 0%,transparent 50%),linear-gradient(180deg,#252535,#151520)}
+        .room-floor{position:absolute;bottom:0;left:0;right:0;height:100px;background:repeating-linear-gradient(90deg,#5a4a3a 0px,#5a4a3a 40px,#6a5a4a 40px,#6a5a4a 80px);border-top:3px solid #3a2a1a}
+        .furniture{position:absolute;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid;border-color:#7a6a5a #4a3a2a #4a3a2a #7a6a5a;box-shadow:inset -3px -3px 0 rgba(0,0,0,0.4),inset 3px 3px 0 rgba(255,255,255,0.15);border-radius:3px}
+        .door{position:absolute;background:linear-gradient(180deg,#7a6a5a,#5a4a3a);border:3px solid;border-color:#9a8a7a #4a3a2a #4a3a2a #9a8a7a;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;z-index:10;border-radius:3px}
+        .door::before{content:'';position:absolute;right:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;background:radial-gradient(circle,var(--gold),#aa8800);border-radius:50%}
+        .door-label{font-size:7px;color:rgba(255,255,255,0.7);margin-top:3px}
+        .door.exit{background:linear-gradient(180deg,#4a7a5a,#3a5a4a);border-color:#6a9a7a #2a4a3a #2a4a3a #6a9a7a}
+        .door.exit.locked{background:linear-gradient(180deg,#6a5050,#4a3535)}
+        .door.exit.locked::after{content:'🔒';position:absolute;font-size:12px;top:50%;left:50%;transform:translate(-50%,-50%)}
+        .puzzle-obj{position:absolute;font-size:24px;z-index:15;filter:drop-shadow(0 0 6px rgba(244,208,63,0.5));animation:float 3s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .clue-obj{position:absolute;font-size:20px;z-index:15;filter:drop-shadow(0 0 5px rgba(69,183,170,0.6));animation:float 2.5s ease-in-out infinite}
+        .player{position:absolute;width:28px;height:42px;z-index:40;display:flex;align-items:center;justify-content:center;font-size:22px;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
+        .player.hiding{opacity:0.3;transform:scale(0.9)}
+        .player.hurt{animation:hurtBlink 0.12s linear 4}
+        @keyframes hurtBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+        .grandpa{position:absolute;width:36px;height:50px;display:none;align-items:center;justify-content:center;font-size:26px;z-index:35;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.5))}
+        .grandpa.visible{display:flex}
+        .grandpa.chasing{animation:grandpaChase 0.2s infinite}
+        @keyframes grandpaChase{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+        .msg{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(15,15,26,0.95);border:2px solid var(--purple);padding:6px 12px;font-size:11px;display:none;z-index:60;max-width:90%;text-align:center;border-radius:6px}
+        .msg.show{display:block}
+        .minimap{position:absolute;bottom:8px;right:8px;width:60px;height:48px;background:rgba(15,15,26,0.9);border:2px solid #3a3a5e;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:2px;z-index:50;border-radius:3px}
+        .map-room{background:#2a2a4e;display:flex;align-items:center;justify-content:center;font-size:5px;color:#666;border-radius:2px}
+        .map-room.current{background:var(--purple-dark);color:white}
+        .map-room.has-grandpa::after{content:'👀';font-size:6px}
+        
+        #mobile-controls{height:110px;min-height:110px;background:linear-gradient(180deg,rgba(26,26,46,0.95),rgba(15,15,26,0.98));border-top:2px solid #3a3a5e;display:flex;justify-content:space-between;align-items:center;padding:8px 15px;padding-bottom:calc(8px + env(safe-area-inset-bottom));z-index:80}
+        #joystick-zone{width:90px;height:90px;background:rgba(58,58,94,0.6);border:2px solid #5a5a7e;border-radius:50%;position:relative}
+        #joystick-knob{width:40px;height:40px;background:linear-gradient(145deg,var(--teal),#2a8a7f);border:2px solid var(--gold);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+        .mobile-btns{display:flex;gap:10px}
+        .mobile-btn{width:55px;height:55px;border-radius:50%;border:2px solid;font-size:22px;display:flex;align-items:center;justify-content:center}
+        .mobile-btn:active{transform:scale(0.9)}
+        #btn-action{background:linear-gradient(145deg,var(--purple),var(--purple-dark));border-color:var(--gold)}
+        #btn-run{background:linear-gradient(145deg,var(--teal),#2a8a7f);border-color:var(--gold)}
+        
+        .modal{position:absolute;inset:0;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.9);z-index:500;padding:12px}
+        .modal.active{display:flex}
+        .modal-box{background:linear-gradient(180deg,#2a2a4e,#1a1a2e);border:2px solid var(--purple);padding:18px;text-align:center;max-width:92%;max-height:85%;overflow-y:auto;border-radius:10px}
+        .modal-title{font-family:'Press Start 2P',monospace;font-size:clamp(9px,3vw,12px);color:var(--gold);margin-bottom:10px}
+        .modal-text{font-size:14px;line-height:1.4;margin-bottom:10px}
+        .modal-input{width:100%;max-width:160px;padding:10px;font-family:'VT323',monospace;font-size:20px;text-align:center;background:#0f0f1a;border:2px solid #3a3a5e;color:var(--gold);margin-bottom:8px;border-radius:6px}
+        .modal-input:focus{outline:none;border-color:var(--teal)}
+        .modal-btns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+        .btn{font-family:'VT323',monospace;font-size:14px;padding:8px 14px;border:2px solid;border-radius:5px}
+        .btn-teal{background:linear-gradient(180deg,var(--teal),#2a8a7f);border-color:var(--gold);color:white}
+        .btn-purple{background:linear-gradient(180deg,var(--purple),var(--purple-dark));border-color:var(--gold);color:white}
+        .btn-gray{background:linear-gradient(180deg,#444,#2a2a2a);border-color:#666;color:#aaa}
+        .feedback{font-size:13px;margin:5px 0;min-height:16px}
+        .feedback.correct{color:var(--teal)}
+        .feedback.wrong{color:#e74c3c}
+        .hint{font-size:12px;color:var(--gold);margin:5px 0}
+        .hiding-text{font-size:18px;color:var(--teal);margin-bottom:10px}
+        .peephole{width:70px;height:70px;margin:0 auto 10px;background:radial-gradient(circle,#1a1a2e,#000 70%);border:2px solid #3a3a5e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+        .hide-warning{color:#e74c3c;font-size:13px;margin-top:6px;display:none}
+        .hide-warning.show{display:block;animation:pulse 0.5s infinite}
+        @keyframes pulse{50%{opacity:0.5}}
+        #chapter-transition{position:absolute;inset:0;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:600;padding:20px}
+        #chapter-transition.active{display:flex}
+        .chapter-title{font-family:'Press Start 2P',monospace;font-size:clamp(11px,4vw,16px);color:var(--gold);margin-bottom:10px}
+        .chapter-subtitle{font-size:15px;color:var(--pale)}
+        .win-title{font-family:'Press Start 2P',monospace;font-size:clamp(11px,4vw,16px);color:var(--teal);margin-bottom:10px}
+        .lose-title{font-family:'Press Start 2P',monospace;font-size:clamp(11px,4vw,16px);color:#e74c3c;margin-bottom:10px}
+        .score{font-family:'Press Start 2P',monospace;font-size:clamp(9px,3vw,12px);color:var(--gold);margin:10px 0}
+        .safe-display{font-family:'Press Start 2P',monospace;font-size:clamp(14px,5vw,20px);color:var(--teal);background:#0f0f1a;padding:8px 18px;margin-bottom:10px;border:2px solid #3a3a5e;letter-spacing:5px;border-radius:6px}
+        .clue-list{text-align:left;margin:8px 0;padding:8px;background:rgba(0,0,0,0.3);border:1px solid #3a3a5e;border-radius:5px}
+        .clue-item{margin:4px 0;font-size:12px}
+        .clue-item.found{color:var(--gold)}
+        .clue-item.missing{color:#666}
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <!-- INTRO -->
-        <div id="intro-screen">
-            <h1 class="story-title">🏠 DEDENİN GİZEMLİ EVİ</h1>
-            <div class="story-text">
-                <p>Yıllardır kapalı olan <span class="highlight">aile malikânesi</span>ne hoş geldin!</p>
-                <br>
-                <p>Deden <span class="highlight">Necmi</span> burada yaşardı. Şimdi ev sana miras kaldı ama içeri girince kapı arkandan kapandı!</p>
-                <br>
-                <p>Dede biraz <span class="highlight">yaramaz</span> bir ruh... Evde saklambaç oynamak istiyor!</p>
-                <br>
-                <p>Bulmacaları çöz, kasanın şifresini bul, anahtarı al ve evden çık!</p>
-                <br>
-                <p style="font-size:14px;color:#888;">🧩 3 bulmaca çöz → 🔐 Kasayı aç → 🔑 Anahtarı al → 🚪 Kaç!</p>
-            </div>
-            <button class="continue-btn" id="continue-intro">MACERAYA BAŞLA</button>
+<div id="game-container">
+    <div id="intro-screen">
+        <h1 class="story-title">🏠 DEDENİN GİZEMLİ EVİ</h1>
+        <div class="story-text">
+            <p>Yıllardır kapalı <span class="highlight">aile malikânesi</span>ne hoş geldin!</p><br>
+            <p>Deden <span class="highlight">Necmi</span> burada yaşardı. Kapı arkandan kapandı!</p><br>
+            <p>Bulmacaları çöz, kasayı aç, anahtarı al ve kaç!</p><br>
+            <p style="font-size:12px;color:#888;">🧩 3 bulmaca → 🔐 Kasa → 🔑 Anahtar → 🚪 Kaç!</p>
         </div>
-        
-        <!-- MENU -->
-        <div id="menu">
-            <h1 class="game-title">🏠 DEDENİN GİZEMLİ EVİ</h1>
-            <p class="game-subtitle">✨ Bulmaca & Kaçış Macerası ✨</p>
-            
-            <div class="menu-section">
-                <div class="section-title">Karakterini Seç</div>
-                <div class="char-grid" id="char-grid"></div>
-            </div>
-            
-            <div class="menu-section">
-                <div class="section-title">Bölüm</div>
-                <div class="chapter-select" id="chapter-select"></div>
-            </div>
-            
-            <button class="start-btn" id="start-btn" disabled>🎮 OYUNA BAŞLA</button>
-            <div id="highscore"></div>
+        <button class="continue-btn" id="continue-intro">BAŞLA</button>
+    </div>
+    
+    <div id="menu">
+        <h1 class="game-title">🏠 DEDENİN GİZEMLİ EVİ</h1>
+        <p class="game-subtitle">✨ Bulmaca & Kaçış ✨</p>
+        <div class="menu-section">
+            <div class="section-title">Karakter Seç</div>
+            <div class="char-grid" id="char-grid"></div>
         </div>
-        
-        <!-- GAME -->
-        <div id="game">
-            <div class="hud">
-                <div class="hud-group">
-                    <div class="hud-item">❤️<div class="pixel-bar"><div class="pixel-bar-fill health-fill" id="health-bar" style="width:100%"></div></div></div>
-                    <div class="hud-item">⚡<div class="pixel-bar"><div class="pixel-bar-fill energy-fill" id="energy-bar" style="width:100%"></div></div></div>
-                </div>
-                <div class="hud-group">
-                    <span class="chapter-indicator" id="chapter-ind">BÖLÜM 1</span>
-                    <span class="room-name" id="room-name">SALON</span>
-                </div>
-                <div class="hud-group">
-                    <span class="hud-stat">📜 <span id="clue-count">0</span>/3</span>
-                    <span class="hud-stat" id="key-indicator">🔑❌</span>
-                    <span class="timer" id="timer">00:00</span>
-                    <button class="pause-btn" id="pause-btn">⏸️</button>
-                </div>
+        <div class="menu-section">
+            <div class="section-title">Bölüm</div>
+            <div class="chapter-select" id="chapter-select"></div>
+        </div>
+        <button class="start-btn" id="start-btn" disabled>🎮 BAŞLA</button>
+        <div id="highscore"></div>
+    </div>
+    
+    <div id="game">
+        <div class="hud">
+            <div class="hud-group">
+                <div class="hud-item">❤️<div class="pixel-bar"><div class="pixel-bar-fill health-fill" id="health-bar" style="width:100%"></div></div></div>
+                <div class="hud-item">⚡<div class="pixel-bar"><div class="pixel-bar-fill energy-fill" id="energy-bar" style="width:100%"></div></div></div>
             </div>
-            
-            <div id="game-area">
-                <div id="room"></div>
-                <div id="fog"></div>
-                <div class="player" id="player">🧑</div>
-                <div class="grandpa" id="grandpa">👴</div>
-                <div class="msg" id="msg"></div>
-                <div class="minimap" id="minimap"></div>
-                <div class="controls-hint">WASD: Hareket | E: Etkileşim | SHIFT: Koş</div>
+            <div class="hud-group">
+                <span class="chapter-indicator" id="chapter-ind">B1</span>
+                <span class="room-name" id="room-name">SALON</span>
             </div>
-            
-            <div id="mobile-controls">
-                <div id="joystick-zone">
-                    <div id="joystick-knob"></div>
-                </div>
-                <div class="mobile-btns">
-                    <button class="mobile-btn" id="btn-action">🔍</button>
-                    <button class="mobile-btn" id="btn-run">🏃</button>
-                </div>
+            <div class="hud-group">
+                <span class="hud-stat">📜<span id="clue-count">0</span>/3</span>
+                <span class="hud-stat" id="key-indicator">🔑❌</span>
+                <span class="timer" id="timer">00:00</span>
+                <button class="pause-btn" id="pause-btn">⏸</button>
             </div>
         </div>
         
-        <!-- MODALS -->
-        <div class="modal" id="puzzle-modal">
-            <div class="modal-box">
-                <div class="modal-title">🧩 BULMACA</div>
-                <div class="modal-text" id="puz-text"></div>
-                <input type="text" class="modal-input" id="puz-input" placeholder="?" autocomplete="off">
-                <div class="feedback" id="puz-feedback"></div>
-                <div class="hint" id="puz-hint"></div>
-                <div class="modal-btns">
-                    <button class="btn btn-teal" id="puz-submit">CEVAPLA</button>
-                    <button class="btn btn-gray" id="puz-hint-btn">💡 İPUCU</button>
-                    <button class="btn btn-gray" id="puz-close">KAPAT</button>
+        <div id="game-area">
+            <div id="room-wrapper">
+                <div id="room">
+                    <div class="player" id="player">🧑</div>
+                    <div class="grandpa" id="grandpa">👴</div>
                 </div>
             </div>
+            <div class="msg" id="msg"></div>
+            <div class="minimap" id="minimap"></div>
         </div>
         
-        <div class="modal" id="safe-modal">
-            <div class="modal-box">
-                <div class="modal-title">🔐 GİZEMLİ KASA</div>
-                <div class="safe-display" id="safe-display">_ _ _</div>
-                <div class="clue-list" id="clue-list"></div>
-                <input type="text" class="modal-input" id="safe-input" placeholder="3 haneli şifre" maxlength="3" autocomplete="off">
-                <div class="feedback" id="safe-feedback"></div>
-                <div class="modal-btns">
-                    <button class="btn btn-teal" id="safe-submit">ŞİFREYİ GİR</button>
-                    <button class="btn btn-gray" id="safe-close">KAPAT</button>
-                </div>
+        <div id="mobile-controls">
+            <div id="joystick-zone"><div id="joystick-knob"></div></div>
+            <div class="mobile-btns">
+                <button class="mobile-btn" id="btn-action">🔍</button>
+                <button class="mobile-btn" id="btn-run">🏃</button>
             </div>
-        </div>
-        
-        <div class="modal hiding-modal" id="hide-modal">
-            <div class="modal-box">
-                <div class="hiding-text">🤫 Saklanıyorsun...</div>
-                <div class="peephole" id="peephole">✓ Güvende</div>
-                <p style="color:#666;font-size:13px;margin-bottom:15px;">Çıkmak için E veya butona bas</p>
-                <button class="btn btn-purple" id="exit-hide-btn">🚪 ÇIKIŞ</button>
-                <div class="hide-warning" id="hide-warning">⚠️ Dede yaklaşıyor!</div>
-            </div>
-        </div>
-        
-        <div class="modal" id="pause-modal">
-            <div class="modal-box">
-                <div class="modal-title">⏸️ DURAKLATILDI</div>
-                <div id="pause-stats" style="margin:15px 0;color:#888;"></div>
-                <div class="modal-btns" style="flex-direction:column;gap:10px;">
-                    <button class="btn btn-teal" id="resume-btn">▶️ DEVAM</button>
-                    <button class="btn btn-gray" id="restart-btn">🔄 YENİDEN</button>
-                    <button class="btn btn-purple" id="quit-btn">🏠 MENÜ</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modal" id="gameover-modal">
-            <div class="modal-box">
-                <h2 class="lose-title">😅 YAKALANDIN!</h2>
-                <p class="modal-text">Dede seni yakaladı!<br>Ama merak etme, tekrar deneyebilirsin.</p>
-                <div id="lose-stats" style="margin:15px 0;color:#888;"></div>
-                <div class="modal-btns">
-                    <button class="btn btn-teal" id="retry-btn">🔄 TEKRAR DENE</button>
-                    <button class="btn btn-gray" id="menu-btn1">🏠 MENÜ</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modal" id="win-modal">
-            <div class="modal-box">
-                <h2 class="win-title">🎉 BAŞARDIN!</h2>
-                <p class="modal-text" id="win-text"></p>
-                <div id="win-stats" style="margin:15px 0;"></div>
-                <div class="score" id="win-score"></div>
-                <div class="modal-btns">
-                    <button class="btn btn-teal" id="next-chapter-btn">SONRAKİ BÖLÜM</button>
-                    <button class="btn btn-gray" id="menu-btn2">🏠 MENÜ</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="chapter-transition">
-            <div class="chapter-title" id="trans-title"></div>
-            <div class="chapter-subtitle" id="trans-subtitle"></div>
         </div>
     </div>
+    
+    <div class="modal" id="puzzle-modal"><div class="modal-box">
+        <div class="modal-title">🧩 BULMACA</div>
+        <div class="modal-text" id="puz-text"></div>
+        <input type="text" class="modal-input" id="puz-input" placeholder="?" autocomplete="off">
+        <div class="feedback" id="puz-feedback"></div>
+        <div class="hint" id="puz-hint"></div>
+        <div class="modal-btns">
+            <button class="btn btn-teal" id="puz-submit">CEVAPLA</button>
+            <button class="btn btn-gray" id="puz-hint-btn">💡</button>
+            <button class="btn btn-gray" id="puz-close">KAPAT</button>
+        </div>
+    </div></div>
+    
+    <div class="modal" id="safe-modal"><div class="modal-box">
+        <div class="modal-title">🔐 KASA</div>
+        <div class="safe-display" id="safe-display">_ _ _</div>
+        <div class="clue-list" id="clue-list"></div>
+        <input type="text" class="modal-input" id="safe-input" placeholder="3 hane" maxlength="3" autocomplete="off">
+        <div class="feedback" id="safe-feedback"></div>
+        <div class="modal-btns">
+            <button class="btn btn-teal" id="safe-submit">GİR</button>
+            <button class="btn btn-gray" id="safe-close">KAPAT</button>
+        </div>
+    </div></div>
+    
+    <div class="modal" id="hide-modal"><div class="modal-box">
+        <div class="hiding-text">🤫 Saklanıyorsun...</div>
+        <div class="peephole" id="peephole">✓ Güvende</div>
+        <button class="btn btn-purple" id="exit-hide-btn">🚪 ÇIK</button>
+        <div class="hide-warning" id="hide-warning">⚠️ Dede yakında!</div>
+    </div></div>
+    
+    <div class="modal" id="pause-modal"><div class="modal-box">
+        <div class="modal-title">⏸ DURAKLADI</div>
+        <div id="pause-stats" style="margin:10px 0;color:#888;"></div>
+        <div class="modal-btns" style="flex-direction:column;gap:6px;">
+            <button class="btn btn-teal" id="resume-btn">▶ DEVAM</button>
+            <button class="btn btn-gray" id="restart-btn">🔄 YENİDEN</button>
+            <button class="btn btn-purple" id="quit-btn">🏠 MENÜ</button>
+        </div>
+    </div></div>
+    
+    <div class="modal" id="gameover-modal"><div class="modal-box">
+        <h2 class="lose-title">😅 YAKALANDIN!</h2>
+        <p class="modal-text">Tekrar dene!</p>
+        <div id="lose-stats" style="color:#888;margin-bottom:10px;"></div>
+        <div class="modal-btns">
+            <button class="btn btn-teal" id="retry-btn">🔄 TEKRAR</button>
+            <button class="btn btn-purple" id="menu-btn1">🏠 MENÜ</button>
+        </div>
+    </div></div>
+    
+    <div class="modal" id="win-modal"><div class="modal-box">
+        <h2 class="win-title">🎉 TAMAM!</h2>
+        <p class="modal-text" id="win-text">Evden kaçtın!</p>
+        <div id="win-stats" style="color:#888;margin-bottom:6px;"></div>
+        <div class="score" id="win-score">🏆 0</div>
+        <div class="modal-btns">
+            <button class="btn btn-teal" id="next-chapter-btn">SONRAKİ</button>
+            <button class="btn btn-purple" id="menu-btn2">🏠 MENÜ</button>
+        </div>
+    </div></div>
+    
+    <div id="chapter-transition">
+        <h1 class="chapter-title" id="trans-title">BÖLÜM 1</h1>
+        <p class="chapter-subtitle" id="trans-subtitle">Gizemli Salon</p>
+    </div>
+</div>
 
 <script>
-// ==================== VERİLER ====================
-const CHARS = {
-    mehmet: { name: 'MEHMET', emoji: '👦', hp: 100, spd: 3.0, stealth: 0.5, desc: 'Dengeli' },
-    gulten: { name: 'GÜLTEN', emoji: '👧', hp: 80, spd: 3.5, stealth: 0.7, desc: 'Hızlı' },
-    feyzullah: { name: 'FEYZULLAH', emoji: '🧔', hp: 120, spd: 2.5, stealth: 0.4, desc: 'Güçlü' }
-};
+const CHARS={cocuk:{name:'ÇOCUK',emoji:'🧒',hp:100,spd:3.5},kiz:{name:'KIZ',emoji:'👧',hp:90,spd:4},oglan:{name:'OĞLAN',emoji:'👦',hp:110,spd:3.2},bebek:{name:'MİNİK',emoji:'👶',hp:80,spd:4.5},nine:{name:'NİNE',emoji:'👵',hp:120,spd:2.8},kedi:{name:'KEDİ',emoji:'🐱',hp:70,spd:5}};
+const CHAPTERS=[{id:1,name:'BÖLÜM 1',story:'Bulmacaları çöz!'},{id:2,name:'BÖLÜM 2',story:'Dede daha hızlı!'},{id:3,name:'BÖLÜM 3',story:'Son kaçış!'}];
+const PUZZLES_EASY=[{q:'2+2=?',a:'4',h:'Dört'},{q:'3+3=?',a:'6',h:'Altı'},{q:'5+3=?',a:'8',h:'Sekiz'},{q:'10-5=?',a:'5',h:'Beş'},{q:'Elde kaç parmak?',a:'5',h:'Say'},{q:'Gökyüzü rengi?',a:'mavi',h:'Yukarı bak'},{q:'Haftada kaç gün?',a:'7',h:'Pazartesi-Pazar'},{q:'Köpek sesi?',a:'hav',h:'Hav hav'},{q:'Kedi sesi?',a:'miyav',h:'Miyav'},{q:'İnek ne verir?',a:'sut',h:'Beyaz'}];
+const PUZZLES_MEDIUM=[{q:'5+7=?',a:'12',h:'12'},{q:'15-8=?',a:'7',h:'7'},{q:'4x3=?',a:'12',h:'12'},{q:'2,4,6,8,?',a:'10',h:'İkişer'},{q:'Yılda kaç ay?',a:'12',h:'12'},{q:'Üçgenin köşesi?',a:'3',h:'Üç'}];
+const PUZZLES_HARD=[{q:'18+15=?',a:'33',h:'33'},{q:'6x4=?',a:'24',h:'24'},{q:'100-45=?',a:'55',h:'55'},{q:'Başkent?',a:'ankara',h:'İstanbul değil'},{q:'Gökkuşağı renk?',a:'7',h:'Yedi'}];
+const PUZZLE_POOLS={1:PUZZLES_EASY,2:PUZZLES_MEDIUM,3:PUZZLES_HARD};
+const ROOMS={salon:{name:'SALON',bg:'room-salon',furniture:[{x:20,y:150,w:100,h:45,icon:'🛋️',c:'#6b5344'},{x:20,y:220,w:55,h:45,icon:'🪑',c:'#5a4535'},{x:140,y:100,w:70,h:45,icon:'📺',c:'#2a2a3a'},{x:680,y:150,w:65,h:90,icon:'🗄️',c:'#4a3a2a',hide:true}],puzzleSpots:[{x:350,y:100,icon:'🖼️'}],clueSpot:{x:580,y:390,icon:'📜'},doors:[{x:755,y:280,w:25,h:70,to:'mutfak',dir:'right'},{x:380,y:55,w:70,h:25,to:'yatak',dir:'top'}],patrol:[{x:200,y:330},{x:480,y:380},{x:620,y:330}]},mutfak:{name:'MUTFAK',bg:'room-mutfak',furniture:[{x:20,y:100,w:55,h:90,icon:'🧊',c:'#8a9a9a'},{x:20,y:210,w:90,h:40,icon:'🍳',c:'#7a6a5a'},{x:660,y:360,w:75,h:65,icon:'📦',c:'#5a4a3a',hide:true}],puzzleSpots:[{x:480,y:100,icon:'📖'}],clueSpot:{x:330,y:390,icon:'📜'},doors:[{x:0,y:280,w:25,h:70,to:'salon',dir:'left'},{x:380,y:55,w:70,h:25,to:'bodrum',dir:'top'}],patrol:[{x:280,y:330},{x:520,y:380},{x:380,y:330}]},yatak:{name:'YATAK',bg:'room-yatak',furniture:[{x:20,y:120,w:120,h:65,icon:'🛏️',c:'#5a4a4a',hide:true},{x:20,y:210,w:55,h:90,icon:'🚪',c:'#4a3a2a',hide:true},{x:660,y:190,w:75,h:45,icon:'💻',c:'#3a3a4a'}],puzzleSpots:[{x:380,y:100,icon:'🖼️'}],clueSpot:{x:530,y:390,icon:'📜'},safeSpot:{x:660,y:390},doors:[{x:380,y:450,w:70,h:25,to:'salon',dir:'bottom'},{x:755,y:280,w:25,h:70,to:'bodrum',dir:'right'}],patrol:[{x:240,y:330},{x:480,y:380},{x:380,y:360}]},bodrum:{name:'BODRUM',bg:'room-bodrum',furniture:[{x:20,y:120,w:45,h:45,icon:'📦',c:'#4a3a2a'},{x:630,y:330,w:85,h:75,icon:'📦',c:'#5a4a3a',hide:true}],puzzleSpots:[],clueSpot:null,doors:[{x:380,y:450,w:70,h:25,to:'mutfak',dir:'bottom'},{x:0,y:280,w:25,h:70,to:'yatak',dir:'left'},{x:700,y:85,w:55,h:45,to:'exit',dir:'right',isExit:true}],patrol:[{x:190,y:330},{x:430,y:380},{x:330,y:360}]}};
+const ENTRY={left:{x:90,y:320},right:{x:660,y:320},top:{x:380,y:190},bottom:{x:380,y:360}};
 
-const CHAPTERS = [
-    { 
-        id: 1, 
-        name: 'BÖLÜM 1', 
-        subtitle: 'Kolay Sorular',
-        story: 'Dedenin evine hoş geldin! Kolay sorularla başlıyoruz...',
-        grandpaSpeed: 0.8,
-        damageMultiplier: 0.6
-    },
-    { 
-        id: 2, 
-        name: 'BÖLÜM 2', 
-        subtitle: 'Orta Seviye',
-        story: 'Harika gidiyorsun! Sorular biraz zorlaşıyor...',
-        grandpaSpeed: 1.0,
-        damageMultiplier: 0.8
-    },
-    { 
-        id: 3, 
-        name: 'BÖLÜM 3', 
-        subtitle: 'Zor Sorular',
-        story: 'Son bölüm! En zor sorular seni bekliyor...',
-        grandpaSpeed: 1.2,
-        damageMultiplier: 1.0
-    }
-];
+let G={running:false,paused:false,chapter:1,room:'salon',char:null,hp:100,maxHp:100,energy:100,cluesFound:0,clueAnswers:[],hasKey:false,hiding:false,invincible:false,px:380,py:280,gx:100,gy:280,gRoom:'mutfak',gChasing:false,gPatrolIdx:0,gRoomDelay:200,startTime:0,currentPuzzle:null,roomPuzzles:{},roomClues:{},safeCode:'',completedChapters:[false,false,false],scale:1};
+let keys={w:false,a:false,s:false,d:false,shift:false};
+let joystick={active:false,dx:0,dy:0};
+let mobileRun=false,msgTimeout=null,timerInterval=null;
 
-// Zorluk seviyelerine göre bulmacalar (İlkokul 2. Sınıf)
-const PUZZLES_EASY = [
-    // === SAYILAR ===
-    { q: '2 + 3 = ?', a: '5', h: 'Parmakla say!' },
-    { q: '4 + 4 = ?', a: '8', h: '4 ve 4 topla' },
-    { q: '5 + 2 = ?', a: '7', h: 'Bese iki ekle' },
-    { q: '3 + 3 = ?', a: '6', h: 'Uc arti uc' },
-    { q: '6 + 1 = ?', a: '7', h: 'Altiya bir ekle' },
-    { q: '10 - 5 = ?', a: '5', h: 'Ondan bes cikar' },
-    { q: '7 - 2 = ?', a: '5', h: 'Yediden iki cikar' },
-    { q: '8 - 4 = ?', a: '4', h: 'Sekizden dort cikar' },
-    { q: '2 x 2 = ?', a: '4', h: 'Iki kere iki' },
-    { q: '3 x 2 = ?', a: '6', h: 'Uc kere iki' },
-    
-    // === GENEL KULTUR - KOLAY ===
-    { q: 'Bir elde kac parmak var?', a: '5', h: 'Parmaklarini say' },
-    { q: 'Gokyuzunun rengi nedir?', a: 'mavi', h: 'Yukari bak!' },
-    { q: 'Cimenler hangi renktir?', a: 'yesil', h: 'Parklardaki renk' },
-    { q: 'Gunesin rengi nedir?', a: 'sari', h: 'Parlak ve sicak' },
-    { q: 'Bir haftada kac gun var?', a: '7', h: 'Pazartesiden Pazara' },
-    { q: 'Karin rengi nedir?', a: 'beyaz', h: 'Kisin yagar' },
-    { q: 'Domates hangi renktir?', a: 'kirmizi', h: 'Salatalarda bulunur' },
-    { q: 'Muz hangi renktir?', a: 'sari', h: 'Maymunlarin sevdigi meyve' },
-    { q: 'Kopek nasil ses cikarir?', a: 'hav', h: 'Hav hav!' },
-    { q: 'Kedi nasil ses cikarir?', a: 'miyav', h: 'Miyav miyav!' },
-    
-    // === HAYVANLAR - KOLAY ===
-    { q: 'Inek bize ne verir?', a: 'sut', h: 'Ictigimiz beyaz sivi' },
-    { q: 'Tavuk bize ne verir?', a: 'yumurta', h: 'Kahvaltida yeriz' },
-    { q: 'Bal yapan bocek hangisi?', a: 'ari', h: 'Vizz vizz sesi cikarir' },
-    { q: 'Kuslar ne yapar?', a: 'ucar', h: 'Gokyuzunde hareket eder' },
-    { q: 'Baliklar nerede yasar?', a: 'su', h: 'Deniz, gol, nehir...' },
-];
+const $=id=>document.getElementById(id);
+const dist=(x1,y1,x2,y2)=>Math.sqrt((x2-x1)**2+(y2-y1)**2);
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const collides=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+const shuffle=arr=>[...arr].sort(()=>Math.random()-0.5);
+function vibrate(p=50){if('vibrate'in navigator)navigator.vibrate(p)}
+function showMsg(t,d=2500){const e=$('msg');e.innerHTML=t;e.classList.add('show');clearTimeout(msgTimeout);msgTimeout=setTimeout(()=>e.classList.remove('show'),d)}
+function formatTime(s){return Math.floor(s/60).toString().padStart(2,'0')+':'+(s%60).toString().padStart(2,'0')}
 
-const PUZZLES_MEDIUM = [
-    // === SAYILAR ===
-    { q: '5 + 7 = ?', a: '12', h: 'Parmaklari kullan' },
-    { q: '9 + 6 = ?', a: '15', h: 'Dokuz arti alti' },
-    { q: '15 - 8 = ?', a: '7', h: 'On besten sekiz cikar' },
-    { q: '12 - 5 = ?', a: '7', h: 'On ikiden bes cikar' },
-    { q: '4 x 3 = ?', a: '12', h: 'Dort kere uc' },
-    { q: '5 x 2 = ?', a: '10', h: 'Bes kere iki' },
-    { q: '3 x 4 = ?', a: '12', h: 'Uc kere dort' },
-    { q: '2, 4, 6, 8, ? (Sonraki)', a: '10', h: 'Ikiser sayiyoruz' },
-    { q: '5, 10, 15, ? (Sonraki)', a: '20', h: 'Beser atliyoruz' },
-    { q: '10, 20, 30, ? (Sonraki)', a: '40', h: 'Onar atliyoruz' },
-    
-    // === GENEL KULTUR - ORTA ===
-    { q: 'Bir yilda kac ay var?', a: '12', h: 'Ocak, Subat, Mart...' },
-    { q: 'Bir yilda kac mevsim var?', a: '4', h: 'Ilkbahar, yaz, sonbahar, kis' },
-    { q: 'Turk bayraginin renkleri?', a: 'kirmizi beyaz', h: 'Ay yildizli bayrak' },
-    { q: 'Gunes hangi yonden dogar?', a: 'dogu', h: 'Sabahleyin oradan gelir' },
-    { q: 'Gunes hangi yonde batar?', a: 'bati', h: 'Aksamleyin oraya gider' },
-    { q: 'Kuzeyin karsisi hangi yon?', a: 'guney', h: 'Haritada asagisi' },
-    { q: 'Bir gunde kac saat var?', a: '24', h: 'Gece ve gunduz toplam' },
-    { q: 'Ucgenin kac kosesi var?', a: '3', h: 'Adinda ipucu var' },
-    { q: 'Karenin kac kenari var?', a: '4', h: 'Hepsi esit uzunlukta' },
-    { q: 'Dairenin kac kosesi var?', a: '0', h: 'Yuvarlaktir' },
-    
-    // === HAYVANLAR - ORTA ===
-    { q: 'En buyuk kara hayvani?', a: 'fil', h: 'Uzun hortumu var' },
-    { q: 'En hizli kara hayvani?', a: 'cita', h: 'Benekli kedi turu' },
-    { q: 'Penguen ne yer?', a: 'balik', h: 'Denizde avlar' },
-    { q: 'Kanguru hangi ulkede yasar?', a: 'avustralya', h: 'Cok uzak bir ulke' },
-    { q: 'Zurafa neyle unludur?', a: 'boyun', h: 'Cok uzun!' },
-];
-
-const PUZZLES_HARD = [
-    // === SAYILAR ===
-    { q: '18 + 15 = ?', a: '33', h: 'Yavas yavas topla' },
-    { q: '25 + 17 = ?', a: '42', h: 'Onlari ayir, birler ekle' },
-    { q: '30 - 12 = ?', a: '18', h: 'Otuzdan on iki cikar' },
-    { q: '50 - 25 = ?', a: '25', h: 'Yarisini bul' },
-    { q: '6 x 4 = ?', a: '24', h: 'Alti kere dort' },
-    { q: '7 x 3 = ?', a: '21', h: 'Yedi kere uc' },
-    { q: '8 x 5 = ?', a: '40', h: 'Sekiz kere bes' },
-    { q: '1, 1, 2, 3, 5, ? (Sonraki)', a: '8', h: 'Onceki ikisini topla' },
-    { q: '1, 4, 9, 16, ? (Sonraki)', a: '25', h: '1x1, 2x2, 3x3, 4x4...' },
-    { q: '100 - 45 = ?', a: '55', h: 'Yuzden cikar' },
-    
-    // === GENEL KULTUR - ZOR ===
-    { q: 'Turkiyenin baskenti neresi?', a: 'ankara', h: 'Baskent, en buyuk sehir degil' },
-    { q: 'Dunyanin uydusu nedir?', a: 'ay', h: 'Geceleri parliyor' },
-    { q: 'Suyun kaynama derecesi?', a: '100', h: 'Derece cinsinden' },
-    { q: 'Suyun donma derecesi?', a: '0', h: 'Buz olur' },
-    { q: 'Gokkusaginda kac renk var?', a: '7', h: 'Kirmizidan mora' },
-    { q: 'En buyuk gezegen hangisi?', a: 'jupiter', h: 'Gunes sisteminde' },
-    { q: 'Bir asirda kac yil var?', a: '100', h: 'Yuzyil demek' },
-    { q: 'Bir duzinede kac tane var?', a: '12', h: 'Yumurta kolisi gibi' },
-    { q: 'Kalp vucudun neresinde?', a: 'gogus', h: 'Sol tarafta atar' },
-    { q: 'Dunyanin sekli nasil?', a: 'yuvarlak', h: 'Top gibi' },
-    
-    // === BILMECELER - ZOR ===
-    { q: 'Ayagi var yurumez, ne?', a: 'masa', h: 'Ustune yemek koyarsin' },
-    { q: 'Dili var konusmaz, ne?', a: 'terazi', h: 'Agirlik olcer' },
-    { q: 'Gozu var gormez, ne?', a: 'igne', h: 'Dikiste kullanilir' },
-    { q: 'Yesil cikar kirmizi biter?', a: 'domates', h: 'Sebze ya da meyve' },
-    { q: 'Kanadi var ucamaz?', a: 'penguen', h: 'Kutuplarda yasar' },
-];
-
-// Tüm bulmacaları birleştir (zorluk seçimi için)
-const PUZZLE_POOLS = {
-    1: PUZZLES_EASY,
-    2: PUZZLES_MEDIUM,
-    3: PUZZLES_HARD
-};
-
-const ROOMS = {
-    salon: {
-        name: 'SALON', bg: 'room-salon',
-        furniture: [
-            { x: 20, y: 150, w: 110, h: 50, icon: '🛋️', c: '#6b5344', type: 'kanepe' },
-            { x: 20, y: 230, w: 60, h: 50, icon: '🪑', c: '#5a4535', type: 'koltuk' },
-            { x: 150, y: 100, w: 80, h: 50, icon: '📺', c: '#2a2a3a', type: 'tv' },
-            { x: 700, y: 150, w: 70, h: 100, icon: '🗄️', c: '#4a3a2a', hide: true, type: 'dolap' },
-            { x: 150, y: 420, w: 90, h: 40, icon: '🪴', c: '#3a4a3a', type: 'saksı' }
-        ],
-        puzzleSpots: [
-            { x: 350, y: 100, icon: '🖼️' },
-            { x: 500, y: 100, icon: '📚' }
-        ],
-        clueSpot: { x: 600, y: 420, icon: '📜' },
-        doors: [
-            { x: 770, y: 300, w: 30, h: 80, to: 'mutfak', dir: 'right' },
-            { x: 400, y: 60, w: 80, h: 30, to: 'yatak', dir: 'top' }
-        ],
-        patrol: [{x:200,y:350},{x:500,y:400},{x:650,y:350},{x:400,y:380}]
-    },
-    mutfak: {
-        name: 'MUTFAK', bg: 'room-mutfak',
-        furniture: [
-            { x: 20, y: 100, w: 60, h: 100, icon: '🧊', c: '#8a9a9a', type: 'buzdolabı' },
-            { x: 20, y: 230, w: 100, h: 45, icon: '🍳', c: '#7a6a5a', type: 'tezgah' },
-            { x: 140, y: 230, w: 60, h: 45, icon: '🚰', c: '#6a7a8a', type: 'lavabo' },
-            { x: 150, y: 420, w: 80, h: 40, icon: '🪑', c: '#5a4a3a', type: 'masa' },
-            { x: 680, y: 380, w: 80, h: 70, icon: '📦', c: '#5a4a3a', hide: true, type: 'kutu' }
-        ],
-        puzzleSpots: [
-            { x: 500, y: 100, icon: '📖' }
-        ],
-        clueSpot: { x: 350, y: 420, icon: '📜' },
-        doors: [
-            { x: 0, y: 300, w: 30, h: 80, to: 'salon', dir: 'left' },
-            { x: 400, y: 60, w: 80, h: 30, to: 'bodrum', dir: 'top' }
-        ],
-        patrol: [{x:300,y:350},{x:550,y:400},{x:650,y:300},{x:400,y:350}]
-    },
-    yatak: {
-        name: 'YATAK ODASI', bg: 'room-yatak',
-        furniture: [
-            { x: 20, y: 120, w: 130, h: 70, icon: '🛏️', c: '#5a4a4a', hide: true, type: 'yatak' },
-            { x: 20, y: 220, w: 60, h: 100, icon: '🚪', c: '#4a3a2a', hide: true, type: 'gardrop' },
-            { x: 680, y: 100, w: 60, h: 50, icon: '🪞', c: '#6a7a8a', type: 'ayna' },
-            { x: 680, y: 200, w: 80, h: 50, icon: '💻', c: '#3a3a4a', type: 'masa' },
-            { x: 200, y: 420, w: 50, h: 40, icon: '🧸', c: '#8a6a5a', type: 'oyuncak' }
-        ],
-        puzzleSpots: [
-            { x: 400, y: 100, icon: '🖼️' }
-        ],
-        clueSpot: { x: 550, y: 420, icon: '📜' },
-        safeSpot: { x: 680, y: 420 },
-        doors: [
-            { x: 400, y: 480, w: 80, h: 30, to: 'salon', dir: 'bottom' },
-            { x: 770, y: 300, w: 30, h: 80, to: 'bodrum', dir: 'right' }
-        ],
-        patrol: [{x:250,y:350},{x:500,y:420},{x:650,y:350},{x:400,y:380}]
-    },
-    bodrum: {
-        name: 'BODRUM', bg: 'room-bodrum',
-        furniture: [
-            { x: 20, y: 120, w: 50, h: 50, icon: '📦', c: '#4a3a2a', type: 'kutu1' },
-            { x: 20, y: 200, w: 50, h: 50, icon: '📦', c: '#3a2a1a', type: 'kutu2' },
-            { x: 20, y: 400, w: 60, h: 50, icon: '🛠️', c: '#5a5a5a', type: 'alet' },
-            { x: 650, y: 350, w: 90, h: 80, icon: '📦', c: '#5a4a3a', hide: true, type: 'kutu3' },
-            { x: 650, y: 200, w: 50, h: 55, icon: '🛢️', c: '#5a4a3a', type: 'varil' },
-            { x: 300, y: 120, w: 55, h: 45, icon: '🕯️', c: '#4a4a4a', type: 'raf' }
-        ],
-        puzzleSpots: [],
-        clueSpot: null,
-        doors: [
-            { x: 400, y: 480, w: 80, h: 30, to: 'mutfak', dir: 'bottom' },
-            { x: 0, y: 300, w: 30, h: 80, to: 'yatak', dir: 'left' },
-            { x: 720, y: 90, w: 60, h: 50, to: 'exit', dir: 'right', isExit: true }
-        ],
-        patrol: [{x:200,y:350},{x:450,y:400},{x:550,y:350},{x:350,y:380}]
-    }
-};
-
-// Giriş pozisyonları - tüm odalarda ortada, mobilyalardan uzak
-const ENTRY = { 
-    left: {x: 100, y: 340},   // Soldan girince
-    right: {x: 680, y: 340},  // Sağdan girince  
-    top: {x: 440, y: 200},    // Üstten girince
-    bottom: {x: 440, y: 380}  // Alttan girince
-};
-
-// ==================== OYUN DURUMU ====================
-let G = {
-    running: false,
-    paused: false,
-    chapter: 1,
-    room: 'salon',
-    char: null,
-    hp: 100,
-    maxHp: 100,
-    energy: 100,
-    cluesFound: 0,
-    clueAnswers: [],
-    hasKey: false,
-    hiding: false,
-    hideSpot: null,
-    invincible: false,
-    px: 400, py: 320,
-    gx: 100, gy: 300,
-    gRoom: 'mutfak',
-    gChasing: false,
-    gPatrolIdx: 0,
-    gRoomDelay: 200,
-    startTime: 0,
-    currentPuzzle: null,
-    roomPuzzles: {},
-    roomClues: {},
-    safeCode: '',
-    completedChapters: [false, false, false]
-};
-
-let keys = { w:false, a:false, s:false, d:false, shift:false };
-let joystick = { active: false, dx: 0, dy: 0 };
-let mobileRun = false;
-let msgTimeout = null;
-let timerInterval = null;
-
-// ==================== YARDIMCI ====================
-const $ = id => document.getElementById(id);
-
-// Haptic feedback for mobile
-function vibrate(pattern = 50) {
-    if ("vibrate" in navigator) {
-        navigator.vibrate(pattern);
-    }
+function updateScale(){
+    const ga=$('game-area'),r=$('room');if(!ga||!r)return;
+    const aW=ga.clientWidth,aH=ga.clientHeight,rW=800,rH=500;
+    G.scale=Math.min(aW/rW,aH/rH,1.2);
+    r.style.transform=`scale(${G.scale})`;
 }
-const dist = (x1,y1,x2,y2) => Math.sqrt((x2-x1)**2 + (y2-y1)**2);
-const clamp = (v,min,max) => Math.max(min, Math.min(max, v));
-const collides = (a,b) => a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
-const rand = (min,max) => Math.floor(Math.random()*(max-min+1))+min;
-const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
-const isMobile = () => window.innerWidth <= 600 || 'ontouchstart' in window;
+window.addEventListener('resize',updateScale);
 
-function showMsg(text, dur=2500) {
-    const el = $('msg');
-    el.innerHTML = text;
-    el.classList.add('show');
-    clearTimeout(msgTimeout);
-    msgTimeout = setTimeout(() => el.classList.remove('show'), dur);
+function generatePuzzles(){
+    const pool=PUZZLE_POOLS[G.chapter]||PUZZLES_EASY;
+    const sel=shuffle([...pool]).slice(0,3);
+    const code=[Math.floor(Math.random()*9)+1,Math.floor(Math.random()*10),Math.floor(Math.random()*10)];
+    G.safeCode=code.join('');
+    G.roomPuzzles={};G.roomClues={};G.clueAnswers=[];
+    G.roomPuzzles['salon']=[{...sel[0],digit:code[0],digitPos:1,solved:false}];
+    G.roomClues['salon']={found:false,digit:code[0],pos:1};
+    G.roomPuzzles['mutfak']=[{...sel[1],digit:code[1],digitPos:2,solved:false}];
+    G.roomClues['mutfak']={found:false,digit:code[1],pos:2};
+    G.roomPuzzles['yatak']=[{...sel[2],digit:code[2],digitPos:3,solved:false}];
+    G.roomClues['yatak']={found:false,digit:code[2],pos:3};
 }
 
-function formatTime(s) {
-    return Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0');
-}
-
-// ==================== BULMACA OLUŞTUR ====================
-function generatePuzzles() {
-    // Bölüme göre zorluk havuzunu seç
-    const puzzlePool = PUZZLE_POOLS[G.chapter] || PUZZLES_EASY;
-    
-    // Her oyunda tamamen rastgele 3 bulmaca seç
-    const shuffled = shuffle([...puzzlePool]);
-    const selected = shuffled.slice(0, 3);
-    
-    // 3 haneli rastgele şifre oluştur (her oyunda farklı)
-    const code = [
-        Math.floor(Math.random() * 9) + 1,  // 1-9
-        Math.floor(Math.random() * 10),      // 0-9
-        Math.floor(Math.random() * 10)       // 0-9
-    ];
-    G.safeCode = code.join('');
-    
-    G.roomPuzzles = {};
-    G.roomClues = {};
-    G.clueAnswers = [];
-    
-    // Her odaya bir bulmaca ve ipucu ata
-    G.roomPuzzles['salon'] = [{ ...selected[0], digit: code[0], digitPos: 1, solved: false }];
-    G.roomClues['salon'] = { found: false, digit: code[0], pos: 1 };
-    
-    G.roomPuzzles['mutfak'] = [{ ...selected[1], digit: code[1], digitPos: 2, solved: false }];
-    G.roomClues['mutfak'] = { found: false, digit: code[1], pos: 2 };
-    
-    G.roomPuzzles['yatak'] = [{ ...selected[2], digit: code[2], digitPos: 3, solved: false }];
-    G.roomClues['yatak'] = { found: false, digit: code[2], pos: 3 };
-    
-    const diffNames = {1: 'Kolay', 2: 'Orta', 3: 'Zor'};
-    console.log(`Bölüm ${G.chapter} (${diffNames[G.chapter]}) - Kasa şifresi:`, G.safeCode);
-    console.log('Bulmaca 1:', selected[0].q);
-    console.log('Bulmaca 2:', selected[1].q);
-    console.log('Bulmaca 3:', selected[2].q);
-}
-
-// ==================== MENÜ ====================
-function initMenu() {
-    const grid = $('char-grid');
-    grid.innerHTML = '';
-    for (const id in CHARS) {
-        const c = CHARS[id];
-        const card = document.createElement('div');
-        card.className = 'char-card';
-        card.dataset.id = id;
-        card.innerHTML = `
-            <div class="char-sprite">${c.emoji}</div>
-            <div class="char-name">${c.name}</div>
-            <div class="char-stats">❤️${c.hp} ⚡${c.spd.toFixed(1)}</div>
-        `;
-        card.onclick = () => selectChar(id);
-        grid.appendChild(card);
-    }
-    
-    const chapterDiv = $('chapter-select');
-    chapterDiv.innerHTML = '';
-    CHAPTERS.forEach((ch, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'chapter-btn' + (i === 0 ? ' selected' : '');
-        btn.textContent = `${ch.id}. BÖLÜM`;
-        btn.disabled = i > 0 && !G.completedChapters[i-1];
-        btn.onclick = () => selectChapter(ch.id);
-        chapterDiv.appendChild(btn);
-    });
-    
+function initMenu(){
+    const g=$('char-grid');g.innerHTML='';
+    for(const id in CHARS){const c=CHARS[id];const d=document.createElement('div');d.className='char-card';d.dataset.id=id;d.innerHTML=`<div class="char-sprite">${c.emoji}</div><div class="char-name">${c.name}</div><div class="char-stats">❤${c.hp} ⚡${c.spd.toFixed(1)}</div>`;d.onclick=()=>selectChar(id);g.appendChild(d)}
+    const ch=$('chapter-select');ch.innerHTML='';
+    CHAPTERS.forEach((c,i)=>{const b=document.createElement('button');b.className='chapter-btn'+(i===0?' selected':'');b.textContent=`${c.id}. BÖLÜM`;b.disabled=i>0&&!G.completedChapters[i-1];b.onclick=()=>selectChapter(c.id);ch.appendChild(b)});
     loadProgress();
 }
+function selectChar(id){vibrate(30);document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected'));document.querySelector(`[data-id="${id}"]`).classList.add('selected');G.char=id;$('start-btn').disabled=false}
+function selectChapter(id){vibrate(30);G.chapter=id;document.querySelectorAll('.chapter-btn').forEach((b,i)=>b.classList.toggle('selected',i===id-1))}
+function loadProgress(){try{const s=JSON.parse(localStorage.getItem('dedeEviProgress'));if(s){G.completedChapters=s.chapters||[false,false,false];document.querySelectorAll('.chapter-btn').forEach((b,i)=>{b.disabled=i>0&&!G.completedChapters[i-1]});if(s.highscore)$('highscore').textContent=`🏆 ${s.highscore}`}}catch(e){}}
+function saveProgress(){try{const s=JSON.parse(localStorage.getItem('dedeEviProgress'))||{};s.chapters=G.completedChapters;localStorage.setItem('dedeEviProgress',JSON.stringify(s))}catch(e){}}
 
-function selectChar(id) {
-    vibrate(30);
-    document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector(`[data-id="${id}"]`).classList.add('selected');
-    G.char = id;
-    $('start-btn').disabled = false;
-}
-
-function selectChapter(id) {
-    G.chapter = id;
-    document.querySelectorAll('.chapter-btn').forEach((b,i) => b.classList.toggle('selected', i === id-1));
-}
-
-function loadProgress() {
-    try {
-        const saved = JSON.parse(localStorage.getItem('dedeEviProgress'));
-        if (saved) {
-            G.completedChapters = saved.chapters || [false, false, false];
-            document.querySelectorAll('.chapter-btn').forEach((btn, i) => {
-                btn.disabled = i > 0 && !G.completedChapters[i-1];
-            });
-            if (saved.highscore) $('highscore').textContent = `🏆 En İyi: ${saved.highscore} puan`;
-        }
-    } catch(e) {}
-}
-
-function saveProgress() {
-    try {
-        const saved = JSON.parse(localStorage.getItem('dedeEviProgress')) || {};
-        saved.chapters = G.completedChapters;
-        localStorage.setItem('dedeEviProgress', JSON.stringify(saved));
-    } catch(e) {}
-}
-
-// ==================== OYUN BAŞLAT ====================
-function startGame() {
-    vibrate(50);
-    if (!G.char) return;
-    
-    const ch = CHAPTERS[G.chapter - 1];
-    const c = CHARS[G.char];
-    
-    G.maxHp = c.hp;
-    G.hp = c.hp;
-    G.energy = 100;
-    G.running = true;
-    G.paused = false;
-    G.room = 'salon';
-    G.px = 400; G.py = 300; // Başlangıç pozisyonu
-    G.gx = 100; G.gy = 300;
-    G.gRoom = 'mutfak';
-    G.gChasing = false;
-    G.gPatrolIdx = 0;
-    G.gRoomDelay = 200;
-    G.cluesFound = 0;
-    G.clueAnswers = [];
-    G.hasKey = false;
-    G.hiding = false;
-    G.hideSpot = null;
-    G.invincible = false;
-    G.startTime = Date.now();
-    G.currentPuzzle = null;
-    
+function startGame(){
+    if(!G.char)return;vibrate(50);
+    const c=CHARS[G.char];
+    G.maxHp=c.hp;G.hp=c.hp;G.energy=100;G.running=true;G.paused=false;
+    G.room='salon';G.px=380;G.py=280;G.gx=100;G.gy=280;G.gRoom='mutfak';
+    G.gChasing=false;G.gPatrolIdx=0;G.gRoomDelay=200;
+    G.cluesFound=0;G.clueAnswers=[];G.hasKey=false;G.hiding=false;G.invincible=false;
+    G.startTime=Date.now();G.currentPuzzle=null;
     generatePuzzles();
-    
-    $('menu').classList.remove('active');
-    $('game').classList.add('active');
-    $('player').textContent = c.emoji;
-    $('chapter-ind').textContent = `BÖLÜM ${G.chapter}`;
-    
-    renderRoom();
-    updateHUD();
-    
-    // Sıkışma kontrolü
-    setTimeout(() => checkAndFixPosition(), 100);
-    
-    showChapterTransition(ch, () => {
-        timerInterval = setInterval(updateTimer, 1000);
-        requestAnimationFrame(gameLoop);
-    });
+    $('menu').classList.remove('active');$('game').classList.add('active');
+    $('player').textContent=c.emoji;$('chapter-ind').textContent=`B${G.chapter}`;
+    setTimeout(updateScale,50);renderRoom();updateHUD();
+    showChapterTransition(CHAPTERS[G.chapter-1],()=>{timerInterval=setInterval(updateTimer,1000);requestAnimationFrame(gameLoop)});
 }
+function showChapterTransition(ch,cb){$('trans-title').textContent=ch.name;$('trans-subtitle').textContent=ch.story;$('chapter-transition').classList.add('active');setTimeout(()=>{$('chapter-transition').classList.remove('active');showMsg('🔍 Bulmacaları çöz!',2500);cb()},1800)}
 
-function showChapterTransition(chapter, callback) {
-    $('trans-title').textContent = chapter.name;
-    $('trans-subtitle').textContent = chapter.story;
-    $('chapter-transition').classList.add('active');
-    
-    setTimeout(() => {
-        $('chapter-transition').classList.remove('active');
-        showMsg('🔍 Bulmacaları çöz, kasayı aç, kaç!', 3000);
-        callback();
-    }, 2500);
+function renderRoom(){
+    const room=ROOMS[G.room],el=$('room'),p=$('player'),g=$('grandpa');
+    el.innerHTML='';el.appendChild(p);el.appendChild(g);el.className=room.bg;
+    const fl=document.createElement('div');fl.className='room-floor';el.appendChild(fl);
+    room.furniture.forEach(f=>{const d=document.createElement('div');d.className='furniture'+(f.hide?' hideable':'');d.style.cssText=`left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.c}`;d.innerHTML=f.icon;el.appendChild(d)});
+    if(G.roomPuzzles[G.room]){const spots=room.puzzleSpots;G.roomPuzzles[G.room].forEach((p,i)=>{if(p.solved)return;const sp=spots[i]||spots[0];if(!sp)return;const d=document.createElement('div');d.className='puzzle-obj';d.style.cssText=`left:${sp.x}px;top:${sp.y}px`;d.textContent=sp.icon;el.appendChild(d)})}
+    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){const d=document.createElement('div');d.className='clue-obj';d.style.cssText=`left:${room.clueSpot.x}px;top:${room.clueSpot.y}px`;d.textContent=room.clueSpot.icon;el.appendChild(d)}
+    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){const d=document.createElement('div');d.className='puzzle-obj';d.style.cssText=`left:${room.safeSpot.x}px;top:${room.safeSpot.y}px;font-size:28px`;d.textContent='🔐';el.appendChild(d)}
+    room.doors.forEach(dr=>{const d=document.createElement('div');let cls='door';if(dr.isExit)cls+=' exit'+(!G.hasKey?' locked':'');d.className=cls;d.style.cssText=`left:${dr.x}px;top:${dr.y}px;width:${dr.w}px;height:${dr.h}px`;const arr={left:'◀',right:'▶',top:'▲',bottom:'▼'};if(!dr.isExit)d.innerHTML=`<span style="font-size:13px">${arr[dr.dir]}</span><span class="door-label">${ROOMS[dr.to]?.name.substring(0,3)||''}</span>`;el.appendChild(d)});
+    $('room-name').textContent=room.name;updateMinimap();
 }
+function updateHUD(){$('health-bar').style.width=(G.hp/G.maxHp*100)+'%';$('energy-bar').style.width=G.energy+'%';$('clue-count').textContent=G.cluesFound;$('key-indicator').textContent=G.hasKey?'🔑✓':'🔑❌'}
+function updateTimer(){if(!G.running||G.paused)return;const s=Math.floor((Date.now()-G.startTime)/1000);$('timer').textContent=formatTime(s)}
+function updateMinimap(){const m=$('minimap');m.innerHTML='';[{id:'yatak',name:'YTK'},{id:'bodrum',name:'BOD'},{id:'salon',name:'SAL'},{id:'mutfak',name:'MUT'}].forEach(r=>{const d=document.createElement('div');d.className='map-room'+(r.id===G.room?' current':'')+(r.id===G.gRoom?' has-grandpa':'');d.textContent=r.name;m.appendChild(d)})}
 
-// ==================== ODA RENDER ====================
-function renderRoom() {
-    const room = ROOMS[G.room];
-    const el = $('room');
-    el.innerHTML = '';
-    el.className = room.bg;
-    
-    // Zemin
-    const floor = document.createElement('div');
-    floor.className = 'room-floor';
-    el.appendChild(floor);
-    
-    // Duvar dekorasyonu (arka plan)
-    const wallDecor = document.createElement('div');
-    wallDecor.className = 'room-wall-decor';
-    wallDecor.textContent = G.room === 'salon' ? '🖼️' : G.room === 'mutfak' ? '🍽️' : G.room === 'yatak' ? '🌙' : '🕯️';
-    wallDecor.style.cssText = 'position:absolute;top:60px;left:50%;transform:translateX(-50%);font-size:50px;opacity:0.08;';
-    el.appendChild(wallDecor);
-    
-    // Mobilyalar
-    room.furniture.forEach(f => {
-        const div = document.createElement('div');
-        div.className = 'furniture' + (f.hide ? ' hideable' : '');
-        
-        // Mobilya tipine göre farklı stiller
-        let extraStyle = '';
-        if (f.icon === '🧊') extraStyle = 'border-radius: 4px 4px 0 0;'; // Buzdolabı
-        if (f.icon === '🛋️') extraStyle = 'border-radius: 8px 8px 4px 4px;'; // Kanepe
-        if (f.icon === '🛏️') extraStyle = 'border-radius: 6px;'; // Yatak
-        if (f.icon === '📦') extraStyle = 'border-radius: 2px;'; // Kutu
-        
-        div.style.cssText = `left:${f.x}px;top:${f.y}px;width:${f.w}px;height:${f.h}px;background:${f.c};${extraStyle}`;
-        div.innerHTML = `<span style="filter:drop-shadow(1px 1px 1px rgba(0,0,0,0.3))">${f.icon}</span>`;
-        el.appendChild(div);
-    });
-    
-    // Bulmacalar
-    if (G.roomPuzzles[G.room]) {
-        const spots = room.puzzleSpots;
-        G.roomPuzzles[G.room].forEach((p, i) => {
-            if (p.solved) return;
-            const spot = spots[i] || spots[0];
-            const div = document.createElement('div');
-            div.className = 'puzzle-obj';
-            div.style.cssText = `left:${spot.x}px;top:${spot.y}px;`;
-            div.textContent = spot.icon;
-            el.appendChild(div);
-        });
-    }
-    
-    // İpucu objesi
-    if (room.clueSpot && G.roomClues[G.room] && !G.roomClues[G.room].found) {
-        const div = document.createElement('div');
-        div.className = 'clue-obj';
-        div.style.cssText = `left:${room.clueSpot.x}px;top:${room.clueSpot.y}px;`;
-        div.textContent = room.clueSpot.icon;
-        el.appendChild(div);
-    }
-    
-    // Kasa (yatak odası)
-    if (G.room === 'yatak' && !G.hasKey) {
-        const spot = room.safeSpot;
-        const div = document.createElement('div');
-        div.className = 'puzzle-obj';
-        div.style.cssText = `left:${spot.x}px;top:${spot.y}px;font-size:32px;`;
-        div.textContent = '🔐';
-        el.appendChild(div);
-    }
-    
-    // Kapılar
-    room.doors.forEach(d => {
-        const div = document.createElement('div');
-        let cls = 'door';
-        if (d.isExit) cls += ' exit' + (!G.hasKey ? ' locked' : '');
-        div.className = cls;
-        div.style.cssText = `left:${d.x}px;top:${d.y}px;width:${d.w}px;height:${d.h}px;`;
-        const arrows = {left:'◀',right:'▶',top:'▲',bottom:'▼'};
-        if (!d.isExit) {
-            div.innerHTML = `<span style="font-size:18px">${arrows[d.dir]}</span><span class="door-label">${ROOMS[d.to]?.name.substring(0,3)||''}</span>`;
-        }
-        el.appendChild(div);
-    });
-    
-    $('room-name').textContent = room.name;
-    updateMinimap();
-}
-
-// ==================== HUD ====================
-function updateHUD() {
-    $('health-bar').style.width = (G.hp / G.maxHp * 100) + '%';
-    $('energy-bar').style.width = G.energy + '%';
-    $('clue-count').textContent = G.cluesFound;
-    $('key-indicator').textContent = G.hasKey ? '🔑✓' : '🔑❌';
-}
-
-function updateTimer() {
-    if (!G.running || G.paused) return;
-    const s = Math.floor((Date.now() - G.startTime) / 1000);
-    $('timer').textContent = formatTime(s);
-}
-
-function updateMinimap() {
-    const map = $('minimap');
-    map.innerHTML = '';
-    const layout = [{id:'yatak',name:'YTK'},{id:'bodrum',name:'BOD'},{id:'salon',name:'SAL'},{id:'mutfak',name:'MUT'}];
-    layout.forEach(r => {
-        const div = document.createElement('div');
-        div.className = 'map-room' + (r.id===G.room?' current':'') + (r.id===G.gRoom?' has-grandpa':'');
-        div.textContent = r.name;
-        map.appendChild(div);
-    });
-}
-
-// ==================== OYUN DÖNGÜSÜ ====================
-function gameLoop() {
-    if (!G.running) return;
-    
-    const safeModal = $('safe-modal');
-    const safeActive = safeModal && safeModal.classList.contains('active');
-    
-    if (!G.paused && !G.hiding && !G.currentPuzzle && !safeActive) {
-        movePlayer();
-        moveGrandpa();
-        checkCollision();
-    }
-    
-    if (G.hiding) updateHidingView();
-    
-    $('player').style.left = G.px + 'px';
-    $('player').style.top = G.py + 'px';
-    $('grandpa').style.left = G.gx + 'px';
-    $('grandpa').style.top = G.gy + 'px';
-    $('grandpa').classList.toggle('visible', G.gRoom === G.room);
-    $('grandpa').classList.toggle('chasing', G.gChasing);
-    $('grandpa').textContent = G.gChasing ? '🧓' : '👴';
-    
+function gameLoop(){
+    if(!G.running)return;
+    const sa=$('safe-modal')?.classList.contains('active');
+    if(!G.paused&&!G.hiding&&!G.currentPuzzle&&!sa){movePlayer();moveGrandpa();checkCollision()}
+    if(G.hiding)updateHidingView();
+    $('player').style.left=G.px+'px';$('player').style.top=G.py+'px';
+    $('grandpa').style.left=G.gx+'px';$('grandpa').style.top=G.gy+'px';
+    $('grandpa').classList.toggle('visible',G.gRoom===G.room);$('grandpa').classList.toggle('chasing',G.gChasing);
+    $('grandpa').textContent=G.gChasing?'🧓':'👴';
     requestAnimationFrame(gameLoop);
 }
+function movePlayer(){
+    const c=CHARS[G.char];if(!c)return;
+    const run=(keys.shift||mobileRun)&&G.energy>10;let spd=c.spd*(run?1.8:1);
+    let dx=0,dy=0;
+    if(joystick.active){dx=joystick.dx*spd;dy=joystick.dy*spd}else{if(keys.w)dy-=spd;if(keys.s)dy+=spd;if(keys.a)dx-=spd;if(keys.d)dx+=spd;if(dx&&dy){dx*=0.707;dy*=0.707}}
+    if(dx===0&&dy===0){G.energy=Math.min(100,G.energy+0.2);updateHUD();return}
+    if(run)G.energy=Math.max(0,G.energy-0.4);else G.energy=Math.min(100,G.energy+0.1);
+    const nX=G.px+dx,nY=G.py+dy,room=ROOMS[G.room];let cX=true,cY=true;
+    for(const f of room.furniture){if(collides({x:nX,y:G.py,w:24,h:36},{x:f.x,y:f.y,w:f.w,h:f.h}))cX=false;if(collides({x:G.px,y:nY,w:24,h:36},{x:f.x,y:f.y,w:f.w,h:f.h}))cY=false}
+    if(cX)G.px=clamp(nX,10,740);if(cY)G.py=clamp(nY,75,420);updateHUD();
+}
+function moveGrandpa(){
+    const cs=1+(G.chapter-1)*0.3;
+    if(G.gRoom===G.room&&!G.hiding){const d=dist(G.gx,G.gy,G.px,G.py);if(d<180){G.gChasing=true;const sp=2.2*cs,a=Math.atan2(G.py-G.gy,G.px-G.gx);G.gx+=Math.cos(a)*sp;G.gy+=Math.sin(a)*sp}else{G.gChasing=false;patrol()}}else{G.gChasing=false;patrol();G.gRoomDelay--;if(G.gRoomDelay<=0){const rs=Object.keys(ROOMS);G.gRoom=rs[(rs.indexOf(G.gRoom)+1)%rs.length];G.gx=380;G.gy=280;G.gRoomDelay=280-(G.chapter*45);updateMinimap()}}
+}
+function patrol(){const room=ROOMS[G.gRoom];if(!room?.patrol)return;const t=room.patrol[G.gPatrolIdx],d=dist(G.gx,G.gy,t.x,t.y);if(d<10)G.gPatrolIdx=(G.gPatrolIdx+1)%room.patrol.length;else{const a=Math.atan2(t.y-G.gy,t.x-G.gx);G.gx+=Math.cos(a)*1.1;G.gy+=Math.sin(a)*1.1}}
+function checkCollision(){if(G.invincible||G.hiding)return;if(G.gRoom===G.room&&dist(G.px,G.py,G.gx,G.gy)<35)takeDamage(25)}
+function takeDamage(a){if(G.invincible)return;G.hp-=a;vibrate([100,50,100]);$('player').classList.add('hurt');setTimeout(()=>$('player').classList.remove('hurt'),500);G.invincible=true;setTimeout(()=>G.invincible=false,1500);updateHUD();if(G.hp<=0)gameOver()}
 
-let debugCounter = 0;
-function movePlayer() {
-    const c = CHARS[G.char];
-    if (!c) { console.log('No character!'); return; }
-    
-    const running = (keys.shift || mobileRun) && G.energy > 10;
-    let spd = c.spd * (running ? 1.8 : 1);
-    
-    let dx = 0, dy = 0;
-    
-    if (joystick.active) {
-        dx = joystick.dx * spd;
-        dy = joystick.dy * spd;
-    } else {
-        if (keys.w) dy -= spd;
-        if (keys.s) dy += spd;
-        if (keys.a) dx -= spd;
-        if (keys.d) dx += spd;
-        if (dx && dy) { dx *= 0.707; dy *= 0.707; }
-    }
-    
-    if (dx === 0 && dy === 0) {
-        G.energy = Math.min(100, G.energy + 0.2);
-        updateHUD();
-        return;
-    }
-    
-    if (running) G.energy = Math.max(0, G.energy - 0.4);
-    else G.energy = Math.min(100, G.energy + 0.1);
-    
-    // Dinamik ekran boyutları
-    const gameArea = $('game-area');
-    const maxX = gameArea ? gameArea.clientWidth - 35 : 760;
-    const maxY = gameArea ? gameArea.clientHeight - 50 : 440;
-    
-    const newX = G.px + dx;
-    const newY = G.py + dy;
-    
-    const room = ROOMS[G.room];
-    let canX = true, canY = true;
-    
-    // Mobilya çarpışma kontrolü
-    for (const f of room.furniture) {
-        if (collides({x:newX,y:G.py,w:28,h:40}, {x:f.x,y:f.y,w:f.w,h:f.h})) canX = false;
-        if (collides({x:G.px,y:newY,w:28,h:40}, {x:f.x,y:f.y,w:f.w,h:f.h})) canY = false;
-    }
-    
-    if (canX) G.px = clamp(newX, 10, maxX);
-    if (canY) G.py = clamp(newY, 60, maxY);
-    
-    updateHUD();
+function interact(){
+    if(G.paused||!G.running)return;vibrate(30);if(G.hiding){exitHide();return}
+    const room=ROOMS[G.room];
+    for(const d of room.doors){if(dist(G.px,G.py,d.x+d.w/2,d.y+d.h/2)<55){if(d.isExit){if(G.hasKey)winChapter();else{showMsg('🔒 Kilitli!',2000);vibrate([50,30,50])}}else changeRoom(d.to,d.dir);return}}
+    if(G.roomPuzzles[G.room]){const spots=room.puzzleSpots;for(let i=0;i<G.roomPuzzles[G.room].length;i++){const p=G.roomPuzzles[G.room][i];if(p.solved)continue;const sp=spots[i]||spots[0];if(sp&&dist(G.px,G.py,sp.x,sp.y)<65){openPuzzle(p);return}}}
+    if(room.clueSpot&&G.roomClues[G.room]&&!G.roomClues[G.room].found){if(dist(G.px,G.py,room.clueSpot.x,room.clueSpot.y)<65){collectClue();return}}
+    if(G.room==='yatak'&&!G.hasKey&&room.safeSpot){if(dist(G.px,G.py,room.safeSpot.x,room.safeSpot.y)<65){openSafe();return}}
+    for(const f of room.furniture){if(f.hide&&dist(G.px,G.py,f.x+f.w/2,f.y+f.h/2)<55){hideInFurniture(f);return}}
+}
+function changeRoom(roomId,fromDir){vibrate(40);G.room=roomId;const op={left:'right',right:'left',top:'bottom',bottom:'top'},en=ENTRY[op[fromDir]]||ENTRY.left;G.px=en.x;G.py=en.y;renderRoom();showMsg(`📍 ${ROOMS[roomId].name}`,1500)}
+
+function openPuzzle(p){G.currentPuzzle=p;$('puz-text').textContent=p.q;$('puz-input').value='';$('puz-feedback').textContent='';$('puz-hint').textContent='';$('puzzle-modal').classList.add('active');setTimeout(()=>$('puz-input').focus(),100)}
+function submitPuzzle(){if(!G.currentPuzzle)return;const inp=$('puz-input').value.trim().toLowerCase(),ans=G.currentPuzzle.a.toLowerCase();if(inp===ans){vibrate([50,30,100]);$('puz-feedback').textContent='✓ Doğru!';$('puz-feedback').className='feedback correct';G.currentPuzzle.solved=true;showMsg(`🎯 Rakam: ${G.currentPuzzle.digit}`,3000);setTimeout(()=>{closePuzzle();renderRoom()},1000)}else{vibrate([100,50,100]);$('puz-feedback').textContent='✗ Yanlış!';$('puz-feedback').className='feedback wrong';$('puz-input').value=''}}
+function showPuzzleHint(){if(G.currentPuzzle)$('puz-hint').textContent='💡 '+G.currentPuzzle.h}
+function closePuzzle(){G.currentPuzzle=null;$('puzzle-modal').classList.remove('active')}
+
+function collectClue(){const cl=G.roomClues[G.room];if(!cl||cl.found)return;vibrate([50,30,100]);cl.found=true;G.cluesFound++;G.clueAnswers.push({pos:cl.pos,digit:cl.digit});showMsg(`📜 ${cl.pos}. rakam: ${cl.digit}`,3000);updateHUD();renderRoom()}
+
+function openSafe(){updateClueList();$('safe-input').value='';$('safe-feedback').textContent='';$('safe-display').textContent='_ _ _';$('safe-modal').classList.add('active');setTimeout(()=>$('safe-input').focus(),100)}
+function updateClueList(){const l=$('clue-list');l.innerHTML='<div style="color:var(--gold);margin-bottom:5px;">📜 İpuçları:</div>';for(let i=1;i<=3;i++){const f=G.clueAnswers.find(c=>c.pos===i),d=document.createElement('div');d.className='clue-item '+(f?'found':'missing');d.textContent=f?`${i}. rakam: ${f.digit}`:`${i}. rakam: ???`;l.appendChild(d)}}
+function submitSafe(){const inp=$('safe-input').value.trim();if(inp.length!==3||!/^\d+$/.test(inp)){$('safe-feedback').textContent='3 hane gir!';$('safe-feedback').className='feedback wrong';return}$('safe-display').textContent=inp.split('').join(' ');if(inp===G.safeCode){vibrate([100,50,100,50,200]);$('safe-feedback').textContent='✓ Açıldı!';$('safe-feedback').className='feedback correct';G.hasKey=true;showMsg('🔑 Anahtar!',3000);setTimeout(()=>{closeSafe();updateHUD();renderRoom()},1500)}else{vibrate([100,50,100]);$('safe-feedback').textContent='✗ Yanlış!';$('safe-feedback').className='feedback wrong';$('safe-input').value=''}}
+function closeSafe(){$('safe-modal').classList.remove('active')}
+
+function hideInFurniture(f){vibrate(40);G.hiding=true;$('player').classList.add('hiding');$('hide-modal').classList.add('active')}
+function exitHide(){vibrate(30);G.hiding=false;$('player').classList.remove('hiding');$('hide-modal').classList.remove('active')}
+function updateHidingView(){const w=$('hide-warning'),p=$('peephole');if(G.gRoom===G.room&&dist(G.px,G.py,G.gx,G.gy)<140){w.classList.add('show');p.textContent='👴 Yakında!';p.style.color='#e74c3c'}else{w.classList.remove('show');p.textContent='✓ Güvende';p.style.color='var(--teal)'}}
+
+function winChapter(){vibrate([100,50,100,50,200,100,300]);G.running=false;clearInterval(timerInterval);G.completedChapters[G.chapter-1]=true;saveProgress();const s=Math.floor((Date.now()-G.startTime)/1000),sc=Math.max(0,300-s)*10+Math.round(G.hp)*5+G.chapter*500;try{const sv=JSON.parse(localStorage.getItem('dedeEviProgress'))||{};if(!sv.highscore||sc>sv.highscore){sv.highscore=sc;localStorage.setItem('dedeEviProgress',JSON.stringify(sv))}}catch(e){}if(G.chapter<3){$('win-text').innerHTML=`Bölüm ${G.chapter} tamam!`;$('next-chapter-btn').style.display='block';$('next-chapter-btn').textContent=`BÖLÜM ${G.chapter+1}`}else{$('win-text').innerHTML='<span style="color:var(--gold)">HEPSİ TAMAM!</span>';$('next-chapter-btn').style.display='none'}$('win-stats').innerHTML=`⏱️${formatTime(s)} ❤️${Math.round(G.hp)}`;$('win-score').textContent=`🏆 ${sc}`;$('win-modal').classList.add('active')}
+function gameOver(){vibrate([200,100,200,100,300]);G.running=false;clearInterval(timerInterval);const s=Math.floor((Date.now()-G.startTime)/1000);$('lose-stats').innerHTML=`⏱️${formatTime(s)} 📜${G.cluesFound}/3`;$('gameover-modal').classList.add('active')}
+function nextChapter(){vibrate(50);G.chapter++;document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));startGame()}
+function restart(){vibrate(50);document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));startGame()}
+function toMenu(){vibrate(50);G.running=false;clearInterval(timerInterval);document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));$('game').classList.remove('active');$('menu').classList.add('active');initMenu()}
+function togglePause(){if(!G.running)return;vibrate(30);G.paused=!G.paused;if(G.paused){const s=Math.floor((Date.now()-G.startTime)/1000);$('pause-stats').innerHTML=`⏱️${formatTime(s)}<br>📜${G.cluesFound}/3 🔑${G.hasKey?'✓':'✗'}`;$('pause-modal').classList.add('active')}else $('pause-modal').classList.remove('active')}
+
+document.addEventListener('keydown',e=>{if(document.activeElement?.tagName==='INPUT'){if(e.key==='Escape'){document.activeElement.blur();if(G.currentPuzzle)closePuzzle()}return}const k=e.key.toLowerCase();if(k==='w'||k==='arrowup'){keys.w=true;e.preventDefault()}if(k==='s'||k==='arrowdown'){keys.s=true;e.preventDefault()}if(k==='a'||k==='arrowleft'){keys.a=true;e.preventDefault()}if(k==='d'||k==='arrowright'){keys.d=true;e.preventDefault()}if(k==='shift')keys.shift=true;if(k==='e'||k===' '){e.preventDefault();interact()}if(k==='escape'){e.preventDefault();if(G.hiding)exitHide();else if(G.currentPuzzle)closePuzzle();else togglePause()}});
+document.addEventListener('keyup',e=>{if(document.activeElement?.tagName==='INPUT')return;const k=e.key.toLowerCase();if(k==='w'||k==='arrowup')keys.w=false;if(k==='s'||k==='arrowdown')keys.s=false;if(k==='a'||k==='arrowleft')keys.a=false;if(k==='d'||k==='arrowright')keys.d=false;if(k==='shift')keys.shift=false});
+
+function initMobileControls(){
+    const z=$('joystick-zone'),k=$('joystick-knob');if(!z||!k)return;let sX,sY;
+    function hS(e){e.preventDefault();const t=e.touches?e.touches[0]:e,r=z.getBoundingClientRect();sX=r.left+r.width/2;sY=r.top+r.height/2;joystick.active=true}
+    function hM(e){if(!joystick.active)return;e.preventDefault();const t=e.touches?e.touches[0]:e;let dx=t.clientX-sX,dy=t.clientY-sY;const mD=32,d=Math.sqrt(dx*dx+dy*dy);if(d>mD){dx=(dx/d)*mD;dy=(dy/d)*mD}joystick.dx=dx/mD;joystick.dy=dy/mD;k.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`}
+    function hE(e){e.preventDefault();joystick.active=false;joystick.dx=0;joystick.dy=0;k.style.transform='translate(-50%,-50%)'}
+    z.addEventListener('touchstart',hS,{passive:false});z.addEventListener('touchmove',hM,{passive:false});z.addEventListener('touchend',hE,{passive:false});z.addEventListener('touchcancel',hE,{passive:false});
+    $('btn-action')?.addEventListener('touchstart',e=>{e.preventDefault();interact()},{passive:false});
+    const br=$('btn-run');if(br){br.addEventListener('touchstart',e=>{e.preventDefault();mobileRun=true;br.style.transform='scale(0.9)'},{passive:false});br.addEventListener('touchend',e=>{e.preventDefault();mobileRun=false;br.style.transform=''},{passive:false});br.addEventListener('touchcancel',()=>{mobileRun=false;br.style.transform=''},{passive:false})}
+    $('pause-btn')?.addEventListener('touchstart',e=>{e.preventDefault();togglePause()},{passive:false});
 }
 
-// Karakter sıkışma kontrolü - odaya girerken
-function checkAndFixPosition() {
-    const room = ROOMS[G.room];
-    const gameArea = $('game-area');
-    const maxX = gameArea ? gameArea.clientWidth - 35 : 760;
-    const maxY = gameArea ? gameArea.clientHeight - 50 : 440;
-    
-    // Mevcut pozisyonda sıkışık mı kontrol et
-    let stuck = false;
-    for (const f of room.furniture) {
-        if (collides({x:G.px,y:G.py,w:28,h:40}, {x:f.x,y:f.y,w:f.w,h:f.h})) {
-            stuck = true;
-            break;
-        }
-    }
-    
-    // Sıkışıksa güvenli pozisyon bul
-    if (stuck) {
-        console.log('Karakter sıkıştı, pozisyon düzeltiliyor...');
-        // Odanın ortasına doğru güvenli yer ara
-        const centerX = maxX / 2;
-        const centerY = maxY / 2;
-        
-        for (let radius = 50; radius < 300; radius += 30) {
-            for (let angle = 0; angle < 360; angle += 30) {
-                const testX = centerX + Math.cos(angle * Math.PI / 180) * radius;
-                const testY = centerY + Math.sin(angle * Math.PI / 180) * radius;
-                
-                let safe = true;
-                for (const f of room.furniture) {
-                    if (collides({x:testX,y:testY,w:28,h:40}, {x:f.x,y:f.y,w:f.w,h:f.h})) {
-                        safe = false;
-                        break;
-                    }
-                }
-                
-                if (safe && testX > 10 && testX < maxX && testY > 60 && testY < maxY) {
-                    G.px = testX;
-                    G.py = testY;
-                    console.log('Güvenli pozisyon bulundu:', testX, testY);
-                    return;
-                }
-            }
-        }
-        
-        // Hiçbir yer bulunamazsa merkeze zorla
-        G.px = centerX;
-        G.py = centerY;
-    }
-}
-
-function moveGrandpa() {
-    const ch = CHAPTERS[G.chapter - 1];
-    
-    if (G.gRoom === G.room && !G.hiding) {
-        G.gChasing = true;
-        const spd = 1.3 * ch.grandpaSpeed;
-        const dx = G.px - G.gx;
-        const dy = G.py - G.gy;
-        const dst = Math.sqrt(dx*dx + dy*dy);
-        if (dst > 5) {
-            G.gx += (dx/dst) * spd;
-            G.gy += (dy/dst) * spd;
-        }
-    } else {
-        G.gChasing = false;
-        const room = ROOMS[G.gRoom];
-        const target = room.patrol[G.gPatrolIdx];
-        const dx = target.x - G.gx;
-        const dy = target.y - G.gy;
-        const dst = Math.sqrt(dx*dx + dy*dy);
-        const spd = 0.9 * ch.grandpaSpeed;
-        if (dst > 5) {
-            G.gx += (dx/dst) * spd;
-            G.gy += (dy/dst) * spd;
-        } else {
-            G.gPatrolIdx = (G.gPatrolIdx + 1) % room.patrol.length;
-        }
-        
-        G.gRoomDelay--;
-        if (G.gRoomDelay <= 0) {
-            if (Math.random() < 0.3) {
-                const doors = room.doors.filter(d => !d.isExit);
-                if (doors.length) {
-                    const door = doors[rand(0, doors.length-1)];
-                    G.gRoom = door.to;
-                    G.gPatrolIdx = 0;
-                    const r = ROOMS[G.gRoom];
-                    if (r.patrol.length) { G.gx = r.patrol[0].x; G.gy = r.patrol[0].y; }
-                    if (G.gRoom === G.room) showMsg('👀 Dede odana geldi!', 2000);
-                }
-            }
-            G.gRoomDelay = 180 + rand(0, 100);
-        }
-    }
-    
-    const gameArea = $('game-area');
-    const maxX = gameArea ? gameArea.clientWidth - 40 : 760;
-    const maxY = gameArea ? gameArea.clientHeight - 60 : 440;
-    
-    G.gx = clamp(G.gx, 10, maxX);
-    G.gy = clamp(G.gy, 60, maxY);
-    updateMinimap();
-}
-
-function checkCollision() {
-    if (G.gRoom !== G.room || G.invincible) return;
-    
-    const d = dist(G.px+14, G.py+21, G.gx+18, G.gy+25);
-    if (d < 35) {
-        takeDamage(15 * CHAPTERS[G.chapter-1].damageMultiplier);
-    }
-}
-
-function takeDamage(amt) {
-    G.hp -= amt;
-    updateHUD();
-    
-    $('game-area').classList.add('shake');
-    $('player').classList.add('hurt');
-    setTimeout(() => {
-        $('game-area').classList.remove('shake');
-        $('player').classList.remove('hurt');
-    }, 400);
-    
-    G.invincible = true;
-    setTimeout(() => G.invincible = false, 1500);
-    
-    if (G.hp <= 0) gameOver();
-}
-
-// ==================== ETKİLEŞİM ====================
-function interact() {
-    if (G.hiding) { exitHide(); return; }
-    if (G.currentPuzzle || G.paused) return;
-    if ($('safe-modal').classList.contains('active')) return;
-    
-    const room = ROOMS[G.room];
-    const px = G.px + 14, py = G.py + 21;
-    
-    for (const d of room.doors) {
-        if (dist(px, py, d.x + d.w/2, d.y + d.h/2) < 55) {
-            useDoor(d);
-            return;
-        }
-    }
-    
-    if (G.room === 'yatak' && !G.hasKey) {
-        const safe = room.safeSpot;
-        if (dist(px, py, safe.x + 16, safe.y + 16) < 55) {
-            openSafe();
-            return;
-        }
-    }
-    
-    if (room.clueSpot && G.roomClues[G.room] && !G.roomClues[G.room].found) {
-        if (dist(px, py, room.clueSpot.x + 12, room.clueSpot.y + 12) < 55) {
-            collectClue();
-            return;
-        }
-    }
-    
-    if (G.roomPuzzles[G.room]) {
-        const spots = room.puzzleSpots;
-        for (let i = 0; i < G.roomPuzzles[G.room].length; i++) {
-            const p = G.roomPuzzles[G.room][i];
-            if (p.solved) continue;
-            const spot = spots[i] || spots[0];
-            if (dist(px, py, spot.x + 14, spot.y + 14) < 55) {
-                openPuzzle(G.room, i);
-                return;
-            }
-        }
-    }
-    
-    for (const f of room.furniture) {
-        if (f.hide && dist(px, py, f.x + f.w/2, f.y + f.h/2) < 70) {
-            tryHide(f);
-            return;
-        }
-    }
-    
-    showMsg('Yakında bir şey yok...', 1000);
-}
-
-function useDoor(door) {
-    if (door.isExit) {
-        if (G.hasKey) {
-            chapterWin();
-        } else {
-            showMsg('🔒 Kapı kilitli! Kasadan anahtarı al.', 2500);
-        }
-        return;
-    }
-    
-    G.room = door.to;
-    const opp = {left:'right',right:'left',top:'bottom',bottom:'top'};
-    const entry = ENTRY[opp[door.dir]];
-    G.px = entry.x; G.py = entry.y;
-    renderRoom();
-    
-    // Sıkışma kontrolü
-    setTimeout(() => checkAndFixPosition(), 50);
-    
-    showMsg('📍 ' + ROOMS[G.room].name, 1200);
-}
-
-function collectClue() {
-    const clue = G.roomClues[G.room];
-    clue.found = true;
-    G.cluesFound++;
-    G.clueAnswers.push({ pos: clue.pos, digit: clue.digit });
-    
-    updateHUD();
-    renderRoom();
-    showMsg(`📜 İpucu! Şifrenin ${clue.pos}. rakamı: <b style="color:var(--gold)">${clue.digit}</b>`, 3500);
-}
-
-function openPuzzle(roomId, idx) {
-    const p = G.roomPuzzles[roomId][idx];
-    G.currentPuzzle = { roomId, idx, puzzle: p };
-    
-    $('puz-text').innerHTML = p.q;
-    $('puz-input').value = '';
-    $('puz-feedback').textContent = '';
-    $('puz-hint').textContent = '';
-    $('puzzle-modal').classList.add('active');
-    setTimeout(() => $('puz-input').focus(), 100);
-}
-
-function submitPuzzle() {
-    if (!G.currentPuzzle) return;
-    const p = G.currentPuzzle.puzzle;
-    
-    // Türkçe karakterleri ve büyük/küçük harfleri normalize et
-    const normalize = (str) => {
-        return str.toString().trim()
-            .toLowerCase()
-            .replace(/ş/gi, 's').replace(/Ş/gi, 's')
-            .replace(/ğ/gi, 'g').replace(/Ğ/gi, 'g')
-            .replace(/ü/gi, 'u').replace(/Ü/gi, 'u')
-            .replace(/ö/gi, 'o').replace(/Ö/gi, 'o')
-            .replace(/ç/gi, 'c').replace(/Ç/gi, 'c')
-            .replace(/ı/gi, 'i').replace(/İ/gi, 'i')
-            .replace(/I/gi, 'i')
-            .replace(/\s+/g, ' '); // Birden fazla boşluğu teke indir
-    };
-    
-    const userAnswer = normalize($('puz-input').value);
-    const correctAnswer = normalize(p.a);
-    
-    if (userAnswer === correctAnswer) {
-        $('puz-feedback').className = 'feedback correct';
-        $('puz-feedback').textContent = '✓ DOĞRU!';
-        p.solved = true;
-        
-        showMsg(`✨ Şifrenin ${p.digitPos}. rakamı: <b style="color:var(--gold)">${p.digit}</b>`, 3500);
-        G.clueAnswers.push({ pos: p.digitPos, digit: p.digit });
-        G.cluesFound++;
-        updateHUD();
-        
-        setTimeout(() => {
-            $('puzzle-modal').classList.remove('active');
-            G.currentPuzzle = null;
-            renderRoom();
-        }, 1200);
-    } else {
-        $('puz-feedback').className = 'feedback wrong';
-        $('puz-feedback').textContent = '✗ Yanlış, tekrar dene!';
-        $('puz-input').value = '';
-        $('puz-input').focus();
-    }
-}
-
-function showPuzzleHint() {
-    if (G.currentPuzzle) $('puz-hint').textContent = '💡 ' + G.currentPuzzle.puzzle.h;
-}
-
-function closePuzzle() {
-    $('puzzle-modal').classList.remove('active');
-    G.currentPuzzle = null;
-}
-
-// ==================== KASA ====================
-function openSafe() {
-    $('safe-modal').classList.add('active');
-    updateSafeDisplay();
-    $('safe-input').value = '';
-    $('safe-feedback').textContent = '';
-    setTimeout(() => $('safe-input').focus(), 100);
-}
-
-function updateSafeDisplay() {
-    const list = $('clue-list');
-    list.innerHTML = '<div style="color:#888;margin-bottom:8px;">Bulduğun İpuçları:</div>';
-    
-    for (let i = 1; i <= 3; i++) {
-        const found = G.clueAnswers.find(c => c.pos === i);
-        const div = document.createElement('div');
-        div.className = 'clue-item ' + (found ? 'found' : 'missing');
-        div.textContent = found ? `${i}. rakam: ${found.digit}` : `${i}. rakam: ???`;
-        list.appendChild(div);
-    }
-    
-    let display = '';
-    for (let i = 1; i <= 3; i++) {
-        const found = G.clueAnswers.find(c => c.pos === i);
-        display += found ? found.digit : '_';
-        if (i < 3) display += ' ';
-    }
-    $('safe-display').textContent = display;
-}
-
-function submitSafe() {
-    const input = $('safe-input').value.trim();
-    
-    if (input === G.safeCode) {
-        $('safe-feedback').innerHTML = '<span class="correct">✓ Kasa açıldı!</span>';
-        G.hasKey = true;
-        updateHUD();
-        showMsg('🔑 Anahtar bulundu! Çıkışa git!', 3000);
-        setTimeout(() => {
-            $('safe-modal').classList.remove('active');
-            renderRoom();
-        }, 1200);
-    } else {
-        $('safe-feedback').innerHTML = '<span class="wrong">✗ Yanlış şifre!</span>';
-        $('safe-input').value = '';
-    }
-}
-
-function closeSafe() {
-    $('safe-modal').classList.remove('active');
-}
-
-// ==================== SAKLANMA ====================
-function tryHide(furniture) {
-    if (G.hiding || G.currentPuzzle) return;
-    
-    G.hiding = true;
-    G.hideSpot = furniture;
-    G.px = furniture.x + furniture.w/2 - 14;
-    G.py = furniture.y + furniture.h/2 - 21;
-    $('player').classList.add('hiding');
-    $('hide-modal').classList.add('active');
-    $('hide-warning').classList.remove('show');
-}
-
-function exitHide() {
-    if (G.hideSpot) {
-        G.py = G.hideSpot.y + G.hideSpot.h + 8;
-        if (G.py > 440) G.py = G.hideSpot.y - 50;
-    }
-    
-    G.hiding = false;
-    G.hideSpot = null;
-    $('player').classList.remove('hiding');
-    $('hide-modal').classList.remove('active');
-    $('hide-warning').classList.remove('show');
-    showMsg('Saklanmadan çıktın.', 800);
-}
-
-function updateHidingView() {
-    if (!G.hideSpot) return;
-    
-    const peep = $('peephole');
-    const warn = $('hide-warning');
-    
-    if (G.gRoom === G.room) {
-        const fx = G.hideSpot.x + G.hideSpot.w/2;
-        const fy = G.hideSpot.y + G.hideSpot.h/2;
-        const d = dist(G.gx+18, G.gy+25, fx, fy);
-        
-        if (d < 90) {
-            peep.textContent = '👀 ÇOK YAKIN!';
-            peep.style.color = '#e74c3c';
-            warn.classList.add('show');
-            
-            const chance = 0.003 * CHAPTERS[G.chapter-1].grandpaSpeed * (1 - CHARS[G.char].stealth * 0.8);
-            if (Math.random() < chance) {
-                exitHide();
-                showMsg('😲 Dede seni buldu!', 2000);
-                takeDamage(25 * CHAPTERS[G.chapter-1].damageMultiplier);
-            }
-        } else if (d < 180) {
-            peep.textContent = '👀 Yaklaşıyor...';
-            peep.style.color = '#f39c12';
-            warn.classList.remove('show');
-        } else {
-            peep.textContent = '👀 Odada...';
-            peep.style.color = '#888';
-            warn.classList.remove('show');
-        }
-    } else {
-        peep.textContent = '✓ Güvende';
-        peep.style.color = 'var(--teal)';
-        warn.classList.remove('show');
-    }
-}
-
-// ==================== WIN/LOSE ====================
-function chapterWin() {
-    G.running = false;
-    clearInterval(timerInterval);
-    
-    G.completedChapters[G.chapter - 1] = true;
-    saveProgress();
-    
-    const s = Math.floor((Date.now() - G.startTime) / 1000);
-    const score = Math.floor((Math.max(0, 300-s) * 10 + G.hp * 5 + G.energy * 2) * (G.chapter * 0.5 + 0.5));
-    
-    try {
-        const saved = JSON.parse(localStorage.getItem('dedeEviProgress')) || {};
-        if (!saved.highscore || score > saved.highscore) {
-            saved.highscore = score;
-            localStorage.setItem('dedeEviProgress', JSON.stringify(saved));
-        }
-    } catch(e) {}
-    
-    if (G.chapter < 3) {
-        $('win-text').textContent = `Bölüm ${G.chapter} tamamlandı! Maceran devam ediyor...`;
-        $('next-chapter-btn').style.display = 'inline-block';
-        $('next-chapter-btn').textContent = `BÖLÜM ${G.chapter + 1}`;
-    } else {
-        $('win-text').innerHTML = `<span style="color:var(--gold)">TÜM BÖLÜMLER TAMAM!</span><br>Dedenin evinden başarıyla çıktın!`;
-        $('next-chapter-btn').style.display = 'none';
-    }
-    
-    $('win-stats').innerHTML = `⏱️ ${formatTime(s)} | ❤️ ${Math.round(G.hp)} | ⚡ ${Math.round(G.energy)}`;
-    $('win-score').textContent = `🏆 ${score} PUAN`;
-    $('win-modal').classList.add('active');
-}
-
-function gameOver() {
-    G.running = false;
-    clearInterval(timerInterval);
-    
-    const s = Math.floor((Date.now() - G.startTime) / 1000);
-    $('lose-stats').innerHTML = `⏱️ ${formatTime(s)} | 📜 ${G.cluesFound}/3`;
-    $('gameover-modal').classList.add('active');
-}
-
-function nextChapter() {
-    G.chapter++;
-    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-    startGame();
-}
-
-function restart() {
-    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-    startGame();
-}
-
-function toMenu() {
-    G.running = false;
-    clearInterval(timerInterval);
-    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-    $('game').classList.remove('active');
-    $('menu').classList.add('active');
-    initMenu();
-}
-
-function togglePause() {
-    if (!G.running) return;
-    G.paused = !G.paused;
-    
-    if (G.paused) {
-        const s = Math.floor((Date.now() - G.startTime) / 1000);
-        $('pause-stats').innerHTML = `⏱️ ${formatTime(s)}<br>📜 ${G.cluesFound}/3 | 🔑 ${G.hasKey ? '✓' : '✗'}`;
-        $('pause-modal').classList.add('active');
-    } else {
-        $('pause-modal').classList.remove('active');
-    }
-}
-
-// ==================== INPUT - KLAVYE ====================
-document.addEventListener('keydown', e => {
-    if (!e || !e.key) return;
-    
-    // Input veya textarea aktifse oyun kontrollerini devre dışı bırak
-    const active = document.activeElement;
-    const isTyping = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
-    
-    if (isTyping) {
-        // Sadece ESC ve Enter'a izin ver
-        if (e.key === 'Escape') {
-            e.preventDefault();
-            active.blur();
-            if (G.currentPuzzle) closePuzzle();
-            else if ($('safe-modal').classList.contains('active')) closeSafe();
-        }
-        return; // Diğer tuşlar input'a gitsin
-    }
-    
-    const k = e.key.toLowerCase();
-    
-    if (k === 'w' || k === 'arrowup') { keys.w = true; e.preventDefault(); }
-    if (k === 's' || k === 'arrowdown') { keys.s = true; e.preventDefault(); }
-    if (k === 'a' || k === 'arrowleft') { keys.a = true; e.preventDefault(); }
-    if (k === 'd' || k === 'arrowright') { keys.d = true; e.preventDefault(); }
-    if (k === 'shift') keys.shift = true;
-    
-    if (k === 'e' || k === ' ') {
-        e.preventDefault();
-        interact();
-    }
-    
-    if (k === 'escape') {
-        e.preventDefault();
-        if (G.hiding) exitHide();
-        else if (G.currentPuzzle) closePuzzle();
-        else if ($('safe-modal').classList.contains('active')) closeSafe();
-        else togglePause();
-    }
-});
-
-document.addEventListener('keyup', e => {
-    if (!e || !e.key) return;
-    
-    // Input aktifse tuşları serbest bırakma
-    const active = document.activeElement;
-    const isTyping = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
-    if (isTyping) return;
-    
-    const k = e.key.toLowerCase();
-    
-    if (k === 'w' || k === 'arrowup') keys.w = false;
-    if (k === 's' || k === 'arrowdown') keys.s = false;
-    if (k === 'a' || k === 'arrowleft') keys.a = false;
-    if (k === 'd' || k === 'arrowright') keys.d = false;
-    if (k === 'shift') keys.shift = false;
-});
-
-// ==================== INPUT - MOBİL ====================
-function initMobileControls() {
-    const zone = $('joystick-zone');
-    const knob = $('joystick-knob');
-    
-    if (!zone || !knob) return;
-    
-    let startX, startY, zoneRect;
-    
-    function handleStart(e) {
-        e.preventDefault();
-        const touch = e.touches ? e.touches[0] : e;
-        zoneRect = zone.getBoundingClientRect();
-        startX = zoneRect.left + zoneRect.width / 2;
-        startY = zoneRect.top + zoneRect.height / 2;
-        joystick.active = true;
-    }
-    
-    function handleMove(e) {
-        if (!joystick.active) return;
-        e.preventDefault();
-        
-        const touch = e.touches ? e.touches[0] : e;
-        let dx = touch.clientX - startX;
-        let dy = touch.clientY - startY;
-        
-        const maxDist = 40;
-        const d = Math.sqrt(dx*dx + dy*dy);
-        
-        if (d > maxDist) {
-            dx = (dx / d) * maxDist;
-            dy = (dy / d) * maxDist;
-        }
-        
-        joystick.dx = dx / maxDist;
-        joystick.dy = dy / maxDist;
-        
-        knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-    }
-    
-    function handleEnd(e) {
-        e.preventDefault();
-        joystick.active = false;
-        joystick.dx = 0;
-        joystick.dy = 0;
-        knob.style.transform = 'translate(-50%, -50%)';
-    }
-    
-    // Touch events
-    zone.addEventListener('touchstart', handleStart, { passive: false });
-    zone.addEventListener('touchmove', handleMove, { passive: false });
-    zone.addEventListener('touchend', handleEnd, { passive: false });
-    zone.addEventListener('touchcancel', handleEnd, { passive: false });
-    
-    // Mouse events (for testing on desktop)
-    zone.addEventListener('mousedown', handleStart);
-    document.addEventListener('mousemove', e => { if (joystick.active) handleMove(e); });
-    document.addEventListener('mouseup', handleEnd);
-    
-    // Action button - Etkileşim
-    const btnAction = $('btn-action');
-    if (btnAction) {
-        btnAction.addEventListener('touchstart', e => {
-            e.preventDefault();
-            interact();
-        }, { passive: false });
-        btnAction.addEventListener('click', interact);
-    }
-    
-    // Run button - Koşma
-    const btnRun = $('btn-run');
-    if (btnRun) {
-        btnRun.addEventListener('touchstart', e => {
-            e.preventDefault();
-            mobileRun = true;
-            btnRun.style.transform = 'scale(0.9)';
-        }, { passive: false });
-        
-        btnRun.addEventListener('touchend', e => {
-            e.preventDefault();
-            mobileRun = false;
-            btnRun.style.transform = 'scale(1)';
-        }, { passive: false });
-        
-        btnRun.addEventListener('touchcancel', e => {
-            mobileRun = false;
-            btnRun.style.transform = 'scale(1)';
-        }, { passive: false });
-    }
-    
-    // Pause button için touch
-    const pauseBtn = $('pause-btn');
-    if (pauseBtn) {
-        pauseBtn.addEventListener('touchstart', e => {
-            e.preventDefault();
-            togglePause();
-        }, { passive: false });
-    }
-}
-
-// ==================== INIT ====================
-document.addEventListener('DOMContentLoaded', () => {
-    $('continue-intro').onclick = () => {
-        $('intro-screen').classList.add('hidden');
-        $('menu').classList.add('active');
-        initMenu();
-    };
-    
-    $('start-btn').onclick = startGame;
-    
-    $('puz-submit').onclick = submitPuzzle;
-    $('puz-hint-btn').onclick = showPuzzleHint;
-    $('puz-close').onclick = closePuzzle;
-    $('puz-input').onkeypress = e => { if (e.key === 'Enter') submitPuzzle(); };
-    
-    $('safe-submit').onclick = submitSafe;
-    $('safe-close').onclick = closeSafe;
-    $('safe-input').onkeypress = e => { if (e.key === 'Enter') submitSafe(); };
-    
-    $('exit-hide-btn').onclick = exitHide;
-    $('hide-modal').onclick = e => { if (e.target.id === 'hide-modal') exitHide(); };
-    
-    $('pause-btn').onclick = togglePause;
-    $('resume-btn').onclick = () => { G.paused = false; $('pause-modal').classList.remove('active'); };
-    $('restart-btn').onclick = restart;
-    $('quit-btn').onclick = toMenu;
-    
-    $('retry-btn').onclick = restart;
-    $('menu-btn1').onclick = toMenu;
-    
-    $('next-chapter-btn').onclick = nextChapter;
-    $('menu-btn2').onclick = toMenu;
-    
+document.addEventListener('DOMContentLoaded',()=>{
+    $('continue-intro').onclick=()=>{vibrate(50);$('intro-screen').classList.add('hidden');$('menu').classList.add('active');initMenu()};
+    $('start-btn').onclick=startGame;
+    $('puz-submit').onclick=submitPuzzle;$('puz-hint-btn').onclick=showPuzzleHint;$('puz-close').onclick=closePuzzle;$('puz-input').onkeypress=e=>{if(e.key==='Enter')submitPuzzle()};
+    $('safe-submit').onclick=submitSafe;$('safe-close').onclick=closeSafe;$('safe-input').onkeypress=e=>{if(e.key==='Enter')submitSafe()};
+    $('exit-hide-btn').onclick=exitHide;$('pause-btn').onclick=togglePause;
+    $('resume-btn').onclick=()=>{G.paused=false;$('pause-modal').classList.remove('active')};
+    $('restart-btn').onclick=restart;$('quit-btn').onclick=toMenu;$('retry-btn').onclick=restart;$('menu-btn1').onclick=toMenu;
+    $('next-chapter-btn').onclick=nextChapter;$('menu-btn2').onclick=toMenu;
     initMobileControls();
-    
-    console.log('🏠 Dedenin Gizemli Evi yüklendi!');
+    document.addEventListener('touchend',e=>{const n=Date.now();if(n-(document.lastTouchEnd||0)<300)e.preventDefault();document.lastTouchEnd=n},{passive:false});
+    document.addEventListener('contextmenu',e=>e.preventDefault());
 });
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js")
-            .then(reg => console.log("SW registered"))
-            .catch(err => console.log("SW failed:", err));
-    });
-}
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
-<script>
-// Prevent double tap zoom
-document.addEventListener('touchend', e => {
-    const now = Date.now();
-    if (now - (document.lastTouchEnd || 0) < 300) {
-        e.preventDefault();
-    }
-    document.lastTouchEnd = now;
-}, { passive: false });
-
-// Prevent context menu
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Fullscreen on tap for iOS
-document.addEventListener('click', function enableFullscreen() {
-    if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(() => {});
-    } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen();
-    }
-    document.removeEventListener('click', enableFullscreen);
-}, { once: true });
-</script>
